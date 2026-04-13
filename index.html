@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>きづけばAI採用 – 気がつけば、採用にAIが効いていた。</title>
+<meta name="description" content="採用業務を丸投げしている3ヶ月の間に、裏側でAI採用エージェントを構築。求人媒体の運用代行から履歴書スクリーニング・面談設定まで自動化。預けたのは採用業務。戻ってきたのは、AI採用基盤。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://tally.so/widgets/embed.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1c35;--navy-2:#122444;--navy-3:#1a3056;
+  --accent:#2471d4;--accent-hi:#4a8ee8;--accent-lt:#e8f0fb;
+  --gold:#c49a3c;--gold-lt:#e8c56a;
+  --gray-bg:#f2f4f8;--gray-line:#dde2ea;
+  --text:#1a2235;--sub:#4a5568;--muted:#718096;--white:#fff;
+  --nav-h:64px;--max-w:1080px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--white);line-height:1.7;overflow-x:hidden}
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 5%}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);background:rgba(11,28,53,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.07);transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
+.nav-inner{max-width:var(--max-w);margin:0 auto;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 5%;gap:16px}
+.logo{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--white);letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:0;flex:1;justify-content:flex-end}
+.nav-links a{font-size:12px;color:rgba(255,255,255,.55);text-decoration:none;padding:6px 12px;letter-spacing:.05em;white-space:nowrap;border-radius:3px;transition:color .2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:2px;left:12px;right:12px;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.nav-links a:hover{color:rgba(255,255,255,.9)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-links a.active{color:var(--white)}
+.nav-cta-zone{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-btn-main{background:var(--accent);color:var(--white);border:none;padding:8px 20px;border-radius:3px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s;white-space:nowrap}
+.nav-btn-main:hover{background:var(--accent-hi)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-hamburger span{width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .3s}
+.nav-drawer{position:fixed;top:var(--nav-h);left:0;right:0;z-index:290;background:var(--navy-2);border-bottom:1px solid rgba(255,255,255,.1);padding:16px 5% 20px;display:none;flex-direction:column;gap:4px;transform:translateY(-10px);opacity:0;transition:transform .25s ease,opacity .25s ease}
+.nav-drawer.open{display:flex;transform:translateY(0);opacity:1}
+.nav-drawer a{font-size:14px;color:rgba(255,255,255,.7);text-decoration:none;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);letter-spacing:.04em}
+.nav-drawer .drawer-cta{margin-top:12px;background:var(--accent);color:var(--white);border:none;padding:12px;border-radius:3px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;text-align:center;letter-spacing:.04em}
+
+/* ── FLOAT CTA ── */
+.float-cta{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navy);border-top:1px solid rgba(255,255,255,.1);padding:12px 0;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.float-cta.visible{transform:translateY(0)}
+.float-cta-inner{max-width:var(--max-w);margin:0 auto;padding:0 5%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.float-cta-text{font-size:13px;color:rgba(255,255,255,.7);line-height:1.5}
+.float-cta-text strong{color:var(--white);font-weight:500;display:block;font-size:14px}
+.float-cta-btns{display:flex;gap:10px;flex-shrink:0}
+.float-btn-main{background:var(--accent);color:var(--white);border:none;padding:9px 22px;border-radius:3px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;box-shadow:0 4px 16px rgba(36,113,212,.4);transition:background .2s;white-space:nowrap}
+.float-btn-main:hover{background:var(--accent-hi)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;background:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;display:flex;align-items:center;padding:calc(var(--nav-h) + 40px) 0 60px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,28,53,.93) 0%,rgba(11,28,53,.75) 60%,rgba(11,28,53,.6) 100%);z-index:0}
+.hero-bg-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;z-index:1}
+.hero-inner{max-width:var(--max-w);width:100%;margin:0 auto;padding:0 5%;position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(36,113,212,.15);border:1px solid rgba(36,113,212,.35);color:#89b8f5;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:.1em;font-weight:500;margin-bottom:24px}
+.hero-badge::before{content:'';width:6px;height:6px;background:#89b8f5;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-family:'Noto Serif JP',serif;font-size:clamp(28px,3.6vw,46px);color:var(--white);font-weight:700;line-height:1.3;margin-bottom:20px;letter-spacing:-.02em}
+.sp-only{display:none}
+.hero-lead{font-size:clamp(13px,1.3vw,15px);color:rgba(255,255,255,.72);max-width:520px;line-height:1.85;margin-bottom:36px;font-weight:400;letter-spacing:.02em}
+.hero-lead .hl-kw{color:var(--accent-hi);font-weight:500}
+.hero-cta-zone{display:flex;flex-direction:column;gap:14px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-main{background:var(--accent);color:var(--white);border:none;padding:14px 36px;border-radius:3px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;box-shadow:0 4px 24px rgba(36,113,212,.38)}
+.btn-main:hover{background:var(--accent-hi);transform:translateY(-2px);box-shadow:0 8px 32px rgba(36,113,212,.48)}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.28);padding:14px 28px;border-radius:3px;font-size:15px;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:.04em;transition:all .2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.05)}
+.hero-micro{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.micro-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.03em}
+.micro-item::before{content:'✓';color:var(--accent-hi);font-size:10px;font-weight:700}
+.hero-highlights{display:flex;flex-direction:column;gap:0;align-items:center;position:relative;width:240px;height:340px}
+.hero-hl{width:180px;height:180px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;transition:border-color .3s,transform .3s;position:absolute}
+.hero-hl:first-child{top:0;left:-30px}
+.hero-hl:last-child{bottom:0;right:-30px}
+.hero-hl:hover{border-color:rgba(255,255,255,.5);transform:scale(1.04)}
+.hero-hl strong{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white);line-height:1.2}
+.hero-hl span{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.03em;line-height:1.4}
+.hero-sp-highlights{display:none;flex-direction:column;gap:10px;margin-top:28px}
+.hero-sp-hl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:14px 20px;text-align:center}
+.hero-sp-hl strong{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--white);display:block;line-height:1.3;margin-bottom:2px}
+.hero-sp-hl span{font-size:11px;color:rgba(255,255,255,.45)}
+.final-highlights{display:flex;gap:24px;margin-top:28px;align-items:center;flex-wrap:wrap}
+.final-hl{width:140px;height:140px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
+.final-hl strong{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--white);line-height:1.2}
+.final-hl span{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.03em;line-height:1.4}
+
+/* ── STATS ── */
+.stats{background:var(--white);padding:64px 0}
+.stats-inner{max-width:var(--max-w);margin:0 auto;padding:0 5%}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--gray-line);border-radius:8px;overflow:hidden}
+.stat{padding:28px 16px;text-align:center;border-right:1px solid var(--gray-line)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Noto Serif JP',serif;font-size:38px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:8px;display:block}
+.stat-n em{font-style:normal;font-size:20px;color:var(--accent)}
+.stat-l{font-size:12px;color:var(--sub);letter-spacing:.04em;line-height:1.5;height:36px;display:flex;align-items:center;justify-content:center}
+.stat-src{font-size:10px;color:var(--muted);margin-top:6px;display:block;height:16px}
+
+/* ── SECTION BASE ── */
+[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
+section{padding:96px 0}
+.sec{max-width:var(--max-w);margin:0 auto;padding:0 5%}
+.tag{font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:12px;display:block}
+.sec-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,4vw,44px);color:var(--text);font-weight:700;line-height:1.4;margin-bottom:14px}
+.sec-lead{font-size:17px;color:var(--sub);line-height:1.9;max-width:600px;margin-bottom:52px;font-weight:300}
+
+/* ── PROBLEMS ── */
+.prob-bg{background:var(--gray-bg)}
+.prob-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.prob-imgs{position:sticky;top:calc(var(--nav-h) + 24px);border-radius:12px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.prob-imgs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s ease}
+.prob-imgs img.active{opacity:1}
+.prob-cards{display:flex;flex-direction:column;gap:12px}
+.prob-card{background:var(--white);border:1px solid var(--gray-line);border-radius:8px;padding:20px 22px;display:flex;gap:16px;align-items:flex-start;transition:box-shadow .2s,transform .2s,border-color .2s;cursor:pointer}
+.prob-card:hover,.prob-card.active{box-shadow:0 6px 24px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--accent)}
+.prob-icon-wrap{width:36px;height:36px;min-width:36px;background:var(--accent-lt);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.prob-icon-wrap svg{width:18px;height:18px}
+.prob-card h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.4}
+.prob-card p{font-size:14px;color:var(--muted);line-height:1.65}
+
+/* ── SERVICE CARDS ── */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--gray-line);border-radius:14px;overflow:hidden}
+.svc-card{padding:40px 32px;position:relative;border-right:1px solid var(--gray-line);transition:background .2s;background:var(--white)}
+.svc-card:last-child{border-right:none}
+.svc-card:hover{background:var(--gray-bg)}
+.svc-card h3{font-size:15px;font-weight:500;color:var(--sub);margin-bottom:18px;line-height:1.6}
+.svc-phase-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:12px;display:block}
+.feat-num{font-family:'Noto Serif JP',serif;font-size:48px;color:var(--accent);font-weight:700;line-height:1;margin-bottom:16px;display:block}
+.feat-kw{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.feat-checks{list-style:none;display:flex;flex-direction:column;gap:8px}
+.feat-checks li{font-size:14px;color:var(--sub);display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+.feat-checks li::before{content:'';width:16px;height:16px;min-width:16px;margin-top:1px;border-radius:50%;background:var(--accent-lt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7l3 3 6-6' stroke='%232471d4' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px no-repeat}
+.svc-benefits{margin-top:56px;background:var(--navy);border-radius:16px;padding:56px 48px;position:relative;overflow:hidden}
+.svc-benefits::before{content:'';position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(36,113,212,.18) 0%,transparent 65%);pointer-events:none}
+.svc-benefits-title{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--white);margin-bottom:6px;text-align:center;position:relative;z-index:1}
+.svc-benefits-sub{font-size:15px;color:rgba(255,255,255,.55);text-align:center;margin-bottom:40px;position:relative;z-index:1}
+.svc-benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative;z-index:1}
+.svc-benefit{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:32px 28px;text-align:center;transition:background .2s}
+.svc-benefit:hover{background:rgba(255,255,255,.1)}
+.svc-benefit-icon{font-size:36px;margin-bottom:14px;display:block}
+.svc-benefit h4{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--white);margin-bottom:10px}
+.svc-benefit p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.7}
+
+/* ── MID CTA ── */
+.mid-cta{background:var(--navy-2);border-radius:10px;padding:40px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid rgba(255,255,255,.08)}
+.mid-cta-text h3{font-family:'Noto Serif JP',serif;font-size:22px;color:var(--white);font-weight:700;margin-bottom:6px;line-height:1.4}
+.mid-cta-text p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;font-weight:300}
+.mid-cta-btns{display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-width:220px}
+.mid-btn-main{background:var(--accent);color:var(--white);border:none;padding:14px 28px;border-radius:3px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s;text-align:center;box-shadow:0 4px 16px rgba(36,113,212,.3)}
+.mid-btn-main:hover{background:var(--accent-hi)}
+.mid-micro{font-size:11px;color:rgba(255,255,255,.28);text-align:center;letter-spacing:.04em}
+
+/* ── COMPARISON ── */
+.cmp-bg{background:var(--navy)}
+.cmp-bg .tag{color:var(--gold-lt)}
+.cmp-bg .sec-title{color:var(--white)}
+.cmp-bg .sec-lead{color:rgba(255,255,255,.6)}
+.cmp-wrap{overflow-x:auto}
+.cmp-table{width:100%;border-collapse:separate;border-spacing:0}
+.cmp-table thead tr th{padding:16px 20px;font-size:13px;font-weight:500;text-align:center;letter-spacing:.04em}
+.cmp-table thead tr th:first-child{text-align:left;color:rgba(255,255,255,.5);background:transparent;font-size:12px}
+.cmp-table thead .th-other{background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.08);border-bottom:none}
+.cmp-table thead .th-ours{background:var(--accent);color:var(--white);border-radius:8px 8px 0 0}
+.cmp-table tbody tr td{padding:14px 20px;font-size:13px;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
+.cmp-table tbody tr td:first-child{text-align:left;color:rgba(255,255,255,.75);font-weight:400;background:transparent}
+.cmp-table tbody .td-other{background:rgba(255,255,255,.03);color:rgba(255,255,255,.45);border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
+.cmp-table tbody .td-ours{background:rgba(36,113,212,.15);color:var(--white);font-weight:500;border-left:1px solid rgba(36,113,212,.3);border-right:1px solid rgba(36,113,212,.3)}
+.cmp-table tbody tr:last-child .td-other{border-bottom:1px solid rgba(255,255,255,.08)}
+.cmp-table tbody tr:last-child .td-ours{border-bottom:1px solid rgba(36,113,212,.3);border-radius:0 0 8px 8px}
+.yes-icon{color:#5cb8ff;font-weight:700;font-size:15px}
+.no-icon{color:rgba(255,255,255,.2)}
+.mid-icon{color:#f59e0b}
+
+/* ── HOW IT WORKS ── */
+.feat-bg{background:var(--white)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--gray-line);border-radius:14px;overflow:hidden}
+.feat-card{padding:40px 32px;position:relative;border-right:1px solid var(--gray-line);transition:background .2s}
+.feat-card:last-child{border-right:none}
+.feat-card:hover{background:var(--gray-bg)}
+.feat-card-img{width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:20px;display:block}
+.feat-card h3{font-size:15px;font-weight:500;color:var(--sub);margin-bottom:18px;line-height:1.6}
+
+/* ── PRICING ── */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+.plan{background:var(--white);border:1px solid var(--gray-line);border-radius:10px;padding:32px 28px;position:relative;transition:transform .2s,box-shadow .2s}
+.plan:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.09)}
+.plan.feat{border-color:var(--accent);border-width:2px}
+.plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--white);font-size:11px;font-weight:700;padding:3px 18px;border-radius:20px;letter-spacing:.06em;white-space:nowrap}
+.plan-name{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.plan-price{font-family:'Noto Serif JP',serif;font-size:34px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px}
+.plan-note{font-size:11px;color:var(--muted);margin-bottom:22px}
+.plan-list{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:0}
+.plan-list li{font-size:13px;color:var(--sub);padding:8px 0;border-bottom:1px solid var(--gray-bg);display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.plan-list li::before{content:'';width:15px;height:15px;min-width:15px;margin-top:1px;border-radius:50%;background:var(--accent-lt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7l3 3 6-6' stroke='%232471d4' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/9px no-repeat}
+.plan-btn{width:100%;padding:13px;border-radius:4px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s}
+.plan-btn-out{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.plan-btn-out:hover{background:var(--accent-lt)}
+.plan-btn-fill{background:var(--accent);color:var(--white);border:none;box-shadow:0 4px 16px rgba(36,113,212,.28)}
+.plan-btn-fill:hover{background:var(--accent-hi)}
+.price-note{margin-top:28px;padding:20px 28px;background:var(--gray-bg);border-radius:8px;font-size:13px;color:var(--sub);line-height:1.8;text-align:center}
+.price-note strong{color:var(--text)}
+
+/* ── FAQ ── */
+.faq-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--gray-line);border-radius:8px;overflow:hidden}
+.faq-item{border-bottom:1px solid var(--gray-line)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;text-align:left;background:var(--white);border:none;cursor:pointer;padding:20px 26px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:16px;transition:background .15s}
+.faq-q:hover{background:var(--gray-bg)}
+.faq-q .arr{width:22px;height:22px;min-width:22px;border-radius:50%;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);transition:transform .25s,background .2s}
+.faq-item.open .faq-q .arr{transform:rotate(180deg);background:var(--accent-lt)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease;background:var(--gray-bg);font-size:13px;color:var(--sub);line-height:1.85;padding:0 26px;font-weight:300}
+.faq-item.open .faq-a{max-height:320px;padding:18px 26px}
+.faq-category{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;padding:14px 26px 10px;background:var(--gray-bg);border-bottom:1px solid var(--gray-line)}
+
+/* ── FINAL CTA ── */
+.final{background:var(--navy);padding:96px 0 80px;position:relative;overflow:hidden}
+.final::before{content:'';position:absolute;top:-40%;left:30%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(36,113,212,.14) 0%,transparent 65%);pointer-events:none}
+.final .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.final h2{font-family:'Noto Serif JP',serif;font-size:clamp(24px,3.5vw,36px);color:var(--white);font-weight:700;margin-bottom:18px;line-height:1.45}
+.final-lead{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:28px;line-height:1.85;font-weight:300}
+.final-micro{display:flex;flex-direction:column;gap:10px}
+.final-micro span{font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px}
+.final-micro span::before{content:'✓';color:var(--accent-hi);font-weight:700}
+.final-form{background:var(--white);border-radius:12px;overflow:hidden;height:480px;position:relative}
+.final-form iframe{width:100%;height:560px;border:0;position:absolute;top:-70px;left:0}
+footer{background:#060e1c;color:rgba(255,255,255,.3);text-align:center;padding:28px 5%;font-size:11px;letter-spacing:.06em;line-height:2.2}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-highlights{display:none}
+  .hero-sp-highlights{display:flex}
+  .prob-layout{grid-template-columns:1fr}
+  .prob-imgs{display:none}
+}
+@media(max-width:860px){
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+}
+@media(max-width:720px){
+  .sp-only{display:block}
+  .stats{display:none}
+  .price-grid{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
+  .feat-card{border-right:none;border-bottom:1px solid var(--gray-line)}
+  .feat-card:last-child{border-bottom:none}
+  .svc-grid{grid-template-columns:1fr}
+  .svc-card{border-right:none;border-bottom:1px solid var(--gray-line)}
+  .svc-card:last-child{border-bottom:none}
+  .svc-benefits{padding:40px 24px}
+  .svc-benefits-grid{grid-template-columns:1fr}
+  .feat-card-img{height:120px}
+  .mid-cta{flex-direction:column}
+  .mid-cta-btns{width:100%}
+  .float-cta-text{display:none}
+  .final .wrap{grid-template-columns:1fr}
+  .final-form{height:420px}
+  .final-form iframe{height:500px;top:-70px}
+  :root{--nav-h:56px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="top-nav">
+  <div class="nav-inner">
+    <a href="#hero" class="logo" style="text-decoration:none">きづけば<span>AI</span>採用</a>
+    <div class="nav-links">
+      <a href="#problems">課題</a>
+      <a href="#service">サービス</a>
+      <a href="#phases">3つのフェーズ</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta-zone">
+      <a href="#contact" class="nav-btn-main" style="text-decoration:none">資料請求</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="drawer">
+  <a href="#problems" onclick="closeDrawer()">課題</a>
+  <a href="#service" onclick="closeDrawer()">サービス</a>
+  <a href="#phases" onclick="closeDrawer()">3つのフェーズ</a>
+  <a href="#pricing" onclick="closeDrawer()">料金</a>
+  <a href="#faq" onclick="closeDrawer()">FAQ</a>
+  <a href="#contact" class="drawer-cta" onclick="closeDrawer()" style="text-decoration:none">資料請求</a>
+</div>
+
+<!-- FLOAT CTA -->
+<div class="float-cta" id="floatCta">
+  <div class="float-cta-inner">
+    <div class="float-cta-text">
+      <strong>きづけばAI採用 — 丸投げから、AI化へ。</strong>
+      初期費用なし・3ヶ月でAI採用基盤を構築
+    </div>
+    <div class="float-cta-btns">
+      <a href="#contact" class="float-btn-main" style="text-decoration:none">資料請求 →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">採用BPO × AI導入 ── 中小企業特化</div>
+      <h1>気がつけば、<br>採用にAIが<br class="sp-only">効いていた。</h1>
+      <p class="hero-lead">採用業務を丸投げしている<span class="hl-kw">3ヶ月</span>の間に、<br>裏側で<span class="hl-kw">AI採用エージェント</span>を構築。<br>預けたのは採用業務。戻ってきたのは、<span class="hl-kw">AI採用基盤</span>。</p>
+      <div class="hero-cta-zone">
+        <div class="hero-btns">
+          <a href="#contact" class="btn-main" style="text-decoration:none">資料請求 →</a>
+          <a href="#problems" class="btn-ghost" style="text-decoration:none">詳しくはこちら</a>
+        </div>
+        <div class="hero-micro">
+          <span class="micro-item">初期費用なし</span>
+          <span class="micro-item">3ヶ月でAI化</span>
+          <span class="micro-item">求人媒体運用から面談設定まで</span>
+        </div>
+      </div>
+      <div class="hero-sp-highlights">
+        <div class="hero-sp-hl"><strong>月額 ¥148,000〜</strong><span>採用規模に応じて</span></div>
+        <div class="hero-sp-hl"><strong>3ヶ月でAI導入完了</strong><span>裏側で自動構築</span></div>
+      </div>
+    </div>
+    <div class="hero-highlights">
+      <div class="hero-hl">
+        <strong>月額<br>¥148,000〜</strong>
+        <span>採用規模に応じて</span>
+      </div>
+      <div class="hero-hl">
+        <strong>3ヶ月で<br>AI導入完了</strong>
+        <span>裏側で自動構築</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stats-grid">
+    <div class="stat fi">
+      <span class="stat-n">34<em>%</em></span>
+      <span class="stat-l">中小企業が「採用に<br>十分な人手がない」</span>
+      <span class="stat-src">中小企業庁 2024年白書</span>
+    </div>
+    <div class="stat fi">
+      <span class="stat-n">103<em>万円</em></span>
+      <span class="stat-l">中途1名あたりの<br>平均採用コスト</span>
+      <span class="stat-src">リクルート 2024年調査</span>
+    </div>
+    <div class="stat fi">
+      <span class="stat-n">70<em>%</em></span>
+      <span class="stat-l">書類選考・日程調整に<br>費やされる時間</span>
+      <span class="stat-src">&nbsp;</span>
+    </div>
+    <div class="stat fi">
+      <span class="stat-n">3<em>ヶ月</em></span>
+      <span class="stat-l">AI採用基盤の<br>構築期間</span>
+      <span class="stat-src">&nbsp;</span>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEMS -->
+<section class="prob-bg" id="problems">
+  <div class="sec">
+    <span class="tag fi">PROBLEM</span>
+    <h2 class="sec-title fi">こんな状況、ありませんか？</h2>
+    <p class="sec-lead fi">中小企業の採用あるある。一つでも当てはまれば、解決できます。</p>
+    <div class="prob-layout">
+      <div class="prob-imgs fi">
+        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" alt="採用業務に追われる" data-prob="0" class="active">
+        <img src="https://images.unsplash.com/photo-1560264280-88b68371db39?auto=format&fit=crop&w=600&q=80" alt="求人媒体の運用" data-prob="1">
+        <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80" alt="応募者対応" data-prob="2">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=600&q=80" alt="AI導入" data-prob="3">
+        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80" alt="採用ミスマッチ" data-prob="4">
+      </div>
+      <div class="prob-cards">
+        <div class="prob-card fi active" data-prob="0">
+          <div class="prob-icon-wrap">
+            <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="#2471d4" stroke-width="1.5"/><path d="M9 5v4l2.5 2.5" stroke="#2471d4" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div><h3>社長・現場マネージャーが採用業務に追われている</h3><p>本業に集中したいのに、求人原稿の作成・応募者対応・面談設定で時間が消える。</p></div>
+        </div>
+        <div class="prob-card fi" data-prob="1">
+          <div class="prob-icon-wrap">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="#2471d4" stroke-width="1.5"/><path d="M6 7h6M6 10h4" stroke="#2471d4" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div><h3>求人媒体に掲載しても、まともな応募が来ない</h3><p>原稿の質・ターゲティング・運用の最適化ができておらず、コストだけがかさむ。</p></div>
+        </div>
+        <div class="prob-card fi" data-prob="2">
+          <div class="prob-icon-wrap">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M9 2a4 4 0 100 8A4 4 0 009 2z" stroke="#2471d4" stroke-width="1.5"/><path d="M2 16c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="#2471d4" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div><h3>書類選考と日程調整だけで1日が終わる</h3><p>履歴書を読んで、合否を判断して、候補者にメールして、カレンダーを確認して…の繰り返し。</p></div>
+        </div>
+        <div class="prob-card fi" data-prob="3">
+          <div class="prob-icon-wrap">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="2" stroke="#2471d4" stroke-width="1.5"/><path d="M6 4V3a1 1 0 011-1h4a1 1 0 011 1v1" stroke="#2471d4" stroke-width="1.5"/><path d="M6 9h6M6 12h4" stroke="#2471d4" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div><h3>採用にAIを使いたいが、何から始めればいいかわからない</h3><p>AIツールが多すぎて選定も導入もできない。そもそも採用業務を回すので精一杯。</p></div>
+        </div>
+        <div class="prob-card fi" data-prob="4">
+          <div class="prob-icon-wrap">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3l6 6-6 6" stroke="#2471d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div><h3>エージェントは高い、RPOは丸投げで社内に何も残らない</h3><p>人材紹介は年収の35%。RPOは毎月のコストが続くだけで、自社の採用力は上がらない。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE (3つのフェーズ) -->
+<section id="service">
+  <div class="sec" id="phases">
+    <span class="tag fi">SERVICE</span>
+    <h2 class="sec-title fi">3ヶ月で、丸投げからAI化へ</h2>
+    <p class="sec-lead fi">ただのRPOでは終わりません。3つのフェーズで、御社の採用をAIで自走させます。</p>
+    <div class="svc-grid fi">
+      <div class="svc-card">
+        <span class="svc-phase-label">Phase 01</span>
+        <div class="feat-num">01</div>
+        <div class="feat-kw">採用BPO</div>
+        <h3>採用業務をまるごと代行</h3>
+        <ul class="feat-checks">
+          <li>求人媒体の選定・原稿作成・掲載運用</li>
+          <li>応募者の一次スクリーニング</li>
+          <li>候補者への連絡・日程調整</li>
+          <li>面談設定・リマインド対応</li>
+          <li>採用進捗レポート作成</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <span class="svc-phase-label">Phase 02</span>
+        <div class="feat-num">02</div>
+        <div class="feat-kw">AI構築</div>
+        <h3>BPOと同時にAI採用エージェントを構築</h3>
+        <ul class="feat-checks">
+          <li>御社の採用基準をAIが学習</li>
+          <li>履歴書の自動スクリーニングAI構築</li>
+          <li>求人原稿の自動生成・最適化</li>
+          <li>面談日程の自動調整フロー構築</li>
+          <li>採用パイプラインの可視化ダッシュボード</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <span class="svc-phase-label">Phase 03</span>
+        <div class="feat-num">03</div>
+        <div class="feat-kw">納品</div>
+        <h3>完成したAI採用基盤を御社の資産に</h3>
+        <ul class="feat-checks">
+          <li>AI採用エージェント一式を買い取り</li>
+          <li>運用マニュアル・採用ガイド付き</li>
+          <li>社内研修（オンライン）込み</li>
+          <li>導入後1ヶ月サポート</li>
+          <li>継続BPOへの切替もいつでも可</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 導入メリット -->
+    <div class="svc-benefits fi">
+      <div class="svc-benefits-title">すべて導入すると</div>
+      <div class="svc-benefits-sub">BPO × AI構築 × 納品で実現できること</div>
+      <div class="svc-benefits-grid">
+        <div class="svc-benefit">
+          <span class="svc-benefit-icon">📉</span>
+          <h4>採用コスト激減</h4>
+          <p>AIが書類選考・日程調整を自動化。人材紹介に頼らない採用が実現し、1名あたりのコストが大幅に下がる</p>
+        </div>
+        <div class="svc-benefit">
+          <span class="svc-benefit-icon">🤖</span>
+          <h4>採用担当ゼロでも回る</h4>
+          <p>AIエージェントが応募受付からスクリーニング、面談設定まで自動処理。専任の採用担当者がいなくても採用が進む</p>
+        </div>
+        <div class="svc-benefit">
+          <span class="svc-benefit-icon">⚡</span>
+          <h4>候補者を逃さない</h4>
+          <p>AIが即時レスポンス。応募から面談設定までのリードタイムを劇的に短縮し、優秀な候補者の離脱を防ぐ</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中間CTA -->
+    <div class="mid-cta fi" style="margin-top:56px">
+      <div class="mid-cta-text">
+        <h3>まずは丸投げから始めませんか？</h3>
+        <p>3ヶ月後にはAI採用基盤が手に入ります。初期費用なし・しつこい営業はしません。</p>
+      </div>
+      <div class="mid-cta-btns">
+        <a href="#contact" class="mid-btn-main" style="text-decoration:none">資料請求 →</a>
+        <span class="mid-micro">しつこい営業は一切しません</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="cmp-bg" id="comparison">
+  <div class="sec">
+    <span class="tag fi">COMPARISON</span>
+    <h2 class="sec-title fi">他の選択肢との違い</h2>
+    <p class="sec-lead fi">人材紹介、RPO、AIツール…それぞれの限界と、きづけばAI採用の位置づけ。</p>
+    <div class="cmp-wrap fi">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th style="width:160px"></th>
+            <th class="th-other">人材紹介</th>
+            <th class="th-other">通常のRPO</th>
+            <th class="th-other">AI採用ツール</th>
+            <th class="th-ours">きづけばAI採用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>日常の採用業務代行</td>
+            <td class="td-other"><span class="no-icon">✗ 対象外</span></td>
+            <td class="td-other"><span class="yes-icon">✓ 対応</span></td>
+            <td class="td-other"><span class="no-icon">✗ セルフ運用</span></td>
+            <td class="td-ours"><span class="yes-icon">✓ 全対応</span></td>
+          </tr>
+          <tr>
+            <td>AI導入・自動化</td>
+            <td class="td-other"><span class="no-icon">✗</span></td>
+            <td class="td-other"><span class="no-icon">✗</span></td>
+            <td class="td-other"><span class="mid-icon">✓ 自社で設定</span></td>
+            <td class="td-ours"><span class="yes-icon">✓ BPO中に完了</span></td>
+          </tr>
+          <tr>
+            <td>社内に採用ノウハウが残る</td>
+            <td class="td-other"><span class="no-icon">✗ エージェント依存</span></td>
+            <td class="td-other"><span class="no-icon">✗ 外注のまま</span></td>
+            <td class="td-other"><span class="mid-icon">△ 運用が課題</span></td>
+            <td class="td-ours"><span class="yes-icon">✓ AI基盤を納品</span></td>
+          </tr>
+          <tr>
+            <td>採用コスト推移</td>
+            <td class="td-other"><span class="no-icon">↗ 年収の30-35%</span></td>
+            <td class="td-other"><span class="mid-icon">→ 横ばい</span></td>
+            <td class="td-other"><span class="mid-icon">→ 月額固定</span></td>
+            <td class="td-ours"><span class="yes-icon">↘ 3ヶ月後に半減</span></td>
+          </tr>
+          <tr>
+            <td>導入スピード</td>
+            <td class="td-other"><span class="yes-icon">即日</span></td>
+            <td class="td-other"><span class="mid-icon">2〜4週間</span></td>
+            <td class="td-other"><span class="no-icon">1〜3ヶ月</span></td>
+            <td class="td-ours"><span class="yes-icon">即日開始</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background:var(--gray-bg)">
+  <div class="sec">
+    <span class="tag fi">HOW IT WORKS</span>
+    <h2 class="sec-title fi">伝えるだけ、あとはお任せ</h2>
+    <p class="sec-lead fi">御社がやることは、「こんな人がほしい」を伝えるだけ。残りはきづけばAI採用が担います。</p>
+    <div class="feat-grid fi">
+      <div class="feat-card">
+        <img class="feat-card-img" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=400&h=240&q=80" alt="要件を伝える">
+        <div class="feat-num">1</div>
+        <div class="feat-kw">伝える</div>
+        <h3>「こんな人がほしい」を伝えるだけ</h3>
+        <ul class="feat-checks">
+          <li>求める人物像・スキル・条件をヒアリング</li>
+          <li>採用ポジション・人数・時期を確認</li>
+          <li>チャット・ビデオ通話で完結</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <img class="feat-card-img" src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=400&h=240&q=80" alt="チームが実行">
+        <div class="feat-num">2</div>
+        <div class="feat-kw">任せる</div>
+        <h3>AI × 専門チームが求人運用から面談設定まで全処理</h3>
+        <ul class="feat-checks">
+          <li>求人原稿をAIが生成、媒体に最適化して掲載</li>
+          <li>応募者をAIがスクリーニング、合致度をスコア化</li>
+          <li>面談日程の自動調整・リマインド送付</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <img class="feat-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&h=240&q=80" alt="AI採用基盤が完成">
+        <div class="feat-num">3</div>
+        <div class="feat-kw">手に入る</div>
+        <h3>3ヶ月後、御社専用のAI採用基盤が完成している</h3>
+        <ul class="feat-checks">
+          <li>裏側でAIが御社の採用パターンを学習済み</li>
+          <li>完成したAIエージェントは御社の資産に</li>
+          <li>内製化 or 継続BPO、選べる</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="feat-bg">
+  <div class="sec">
+    <span class="tag fi">WHY US</span>
+    <h2 class="sec-title fi">きづけばAI採用が選ばれる理由</h2>
+    <p class="sec-lead fi"></p>
+    <div class="feat-grid fi">
+      <div class="feat-card">
+        <div class="feat-num">1</div>
+        <div class="feat-kw">丸投げ</div>
+        <h3>BPO中にAI導入が完了する唯一のサービス</h3>
+        <ul class="feat-checks">
+          <li>採用を丸投げしている間にAIエージェントを構築</li>
+          <li>3ヶ月後にはAI採用基盤が御社の資産に</li>
+          <li>内製化 or 継続、どちらも選べる</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">2</div>
+        <div class="feat-kw">コスト↓</div>
+        <h3>人材紹介に頼らない採用を実現</h3>
+        <ul class="feat-checks">
+          <li>エージェント手数料（年収の30-35%）から解放</li>
+          <li>AI化で媒体運用・スクリーニング工数が激減</li>
+          <li>内製化すればBPOコスト自体がゼロに</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">3</div>
+        <div class="feat-kw">速度</div>
+        <h3>候補者対応のスピードが採用を決める</h3>
+        <ul class="feat-checks">
+          <li>AIが応募を即時検知・自動スクリーニング</li>
+          <li>合格者には即座に面談候補日を自動送付</li>
+          <li>応募から面談設定まで最短で当日完了</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="sec">
+    <span class="tag fi">PRICING</span>
+    <h2 class="sec-title fi">料金プラン</h2>
+    <p class="sec-lead fi">AI化で時間が経つほどコストが下がる、新しい料金モデル。</p>
+    <div class="price-grid fi">
+      <div class="plan">
+        <div class="plan-name">採用BPOのみ</div>
+        <div class="plan-price">¥148,000〜<span style="font-size:16px;font-weight:400;color:var(--muted)">/月</span></div>
+        <p class="plan-note">AI導入なし・採用代行のみ</p>
+        <ul class="plan-list">
+          <li>求人媒体の選定・原稿作成・運用</li>
+          <li>応募者スクリーニング・合否連絡</li>
+          <li>面談日程の調整・設定</li>
+          <li>採用進捗レポート</li>
+          <li>AI×専門チームのハイブリッド運用</li>
+        </ul>
+        <a href="#contact" class="plan-btn plan-btn-out" style="text-decoration:none;display:block;text-align:center">資料請求</a>
+      </div>
+      <div class="plan feat">
+        <div class="plan-badge">おすすめ</div>
+        <div class="plan-name">BPO + AI導入パック</div>
+        <div class="plan-price">¥398,000〜</div>
+        <p class="plan-note">BPO（¥148,000〜/月 × 3ヶ月）+ AI採用エージェント構築・納品</p>
+        <ul class="plan-list">
+          <li>上記BPOの全業務（3ヶ月間）</li>
+          <li>御社専用AI採用エージェント構築・納品</li>
+          <li>履歴書スクリーニングAI</li>
+          <li>求人原稿自動生成・面談自動設定</li>
+          <li>運用マニュアル・社内研修・1ヶ月サポート</li>
+        </ul>
+        <a href="#contact" class="plan-btn plan-btn-fill" style="text-decoration:none;display:block;text-align:center">資料請求</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">AI化後の継続BPO</div>
+        <div class="plan-price">¥78,000〜<span style="font-size:16px;font-weight:400;color:var(--muted)">/月</span></div>
+        <p class="plan-note">AI化済みだから約半額で継続</p>
+        <ul class="plan-list">
+          <li>採用BPOと同じ業務範囲</li>
+          <li>AIが自動処理→人がチェックの効率体制</li>
+          <li>採用レポート継続納品</li>
+          <li>求人媒体の新機能・アルゴリズム変更に自動対応</li>
+          <li>いつでもAIエージェント買取に切替可</li>
+        </ul>
+        <a href="#contact" class="plan-btn plan-btn-out" style="text-decoration:none;display:block;text-align:center">資料請求</a>
+      </div>
+    </div>
+    <div class="price-note fi"><strong>料金は採用ポジション数・応募者数・対応範囲によって変わります。</strong><br>まずは無料相談でお見積もりします。初期費用・違約金はありません。</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="sec">
+    <span class="tag fi">FAQ</span>
+    <h2 class="sec-title fi">よくある質問</h2>
+    <p class="sec-lead fi"></p>
+    <div class="faq-list fi">
+      <div class="faq-category">サービスについて</div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">本当に3ヶ月でAI化できるのですか？<span class="arr">▼</span></button><div class="faq-a">はい。BPO期間中に御社の採用データ（求人要件・応募者傾向・選考基準）をAIが学習し、最適なワークフローを構築します。採用ポジション数や複雑さによっては延長する場合もありますが、ほとんどのケースで3ヶ月以内に完了しています。</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">AI化後、自社で運用できるか不安です<span class="arr">▼</span></button><div class="faq-a">ご安心ください。AIエージェントは「誰でも使える」レベルまで最適化してお渡しします。操作マニュアル・社内研修も含まれています。導入後1ヶ月のサポート期間もあります。</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">内製化と継続BPO、どちらがおすすめですか？<span class="arr">▼</span></button><div class="faq-a">人事・採用担当がいる場合は内製化がコスト的に最適です。採用専任者がいない場合は継続BPOがおすすめです。無料相談で最適なプランをご提案します。</div></div>
+      <div class="faq-category">採用業務について</div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">どんな職種・業界にも対応できますか？<span class="arr">▼</span></button><div class="faq-a">はい。IT・営業・事務・製造・飲食など幅広い職種に対応しています。専門性の高い技術職やエグゼクティブ採用にもAIのスクリーニング精度を活かして対応可能です。</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">どの求人媒体に対応していますか？<span class="arr">▼</span></button><div class="faq-a">主要な求人媒体に幅広く対応しています。御社の採用ターゲットに最適な媒体を選定し、原稿作成から掲載運用まで一貫して代行します。詳細は無料相談時にご案内します。</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">面接自体も代行してもらえますか？<span class="arr">▼</span></button><div class="faq-a">一次面談の代行はオプションで承っています。最終面接は採用のミスマッチを防ぐため、御社で実施いただくことを推奨しています。</div></div>
+      <div class="faq-category">契約・安全性について</div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">最低契約期間はありますか？<span class="arr">▼</span></button><div class="faq-a">Phase 1（BPO期間）は3ヶ月が基本です。継続BPOは1ヶ月単位で継続・解約が可能です。違約金はありません。</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">候補者の個人情報は安全ですか？<span class="arr">▼</span></button><div class="faq-a">個人情報保護法に準拠し、SSL/TLS暗号化通信・アクセス権限管理・データの国内サーバー保管を徹底しています。サービス開始前にNDAを締結し、候補者データは契約終了後に完全削除します。</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="contact">
+  <div class="wrap">
+    <div class="final-left">
+      <h2>採用を丸投げしたら、<br>気づけばAI化、完了。</h2>
+      <p class="final-lead">30秒で完了するフォームにご記入ください。<br>対応可否・業務範囲・概算費用をご案内します。</p>
+      <div class="final-micro">
+        <span>初期費用なし</span>
+        <span>3ヶ月でAI導入完了</span>
+        <span>違約金なし</span>
+        <span>しつこい営業は一切しません</span>
+      </div>
+      <div class="final-highlights">
+        <div class="final-hl"><strong>月額<br>¥148,000〜</strong><span>採用規模に応じて</span></div>
+        <div class="final-hl"><strong>3ヶ月で<br>AI化</strong><span>裏側で自動構築</span></div>
+      </div>
+    </div>
+    <div class="final-form">
+      <iframe data-tally-src="https://tally.so/r/q4PoP8?transparentBackground=1&hideTitle=1" width="100%" height="480" frameborder="0" marginheight="0" marginwidth="0" title="きづけばAI採用 資料請求フォーム"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:16px">
+    <a href="company.html" style="color:rgba(255,255,255,.55);text-decoration:none;font-size:12px;letter-spacing:.04em;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">運営会社</a>
+    <a href="privacy.html" style="color:rgba(255,255,255,.55);text-decoration:none;font-size:12px;letter-spacing:.04em;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">プライバシーポリシー</a>
+    <a href="terms.html" style="color:rgba(255,255,255,.55);text-decoration:none;font-size:12px;letter-spacing:.04em;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">利用規約</a>
+  </div>
+  <p>contact@bewibe.com</p>
+  <p style="margin-top:6px">&copy; 2025 株式会社BEWIBE. All rights reserved.</p>
+</footer>
+
+<script>
+const hamburger=document.getElementById('hamburger');
+const drawer=document.getElementById('drawer');
+hamburger.addEventListener('click',()=>{
+  const o=drawer.classList.toggle('open');
+  const s=hamburger.querySelectorAll('span');
+  s[0].style.transform=o?'translateY(7px) rotate(45deg)':'';
+  s[1].style.opacity=o?'0':'1';
+  s[2].style.transform=o?'translateY(-7px) rotate(-45deg)':'';
+});
+function closeDrawer(){drawer.classList.remove('open');hamburger.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='1'})}
+const nav=document.getElementById('top-nav');
+const floatCta=document.getElementById('floatCta');
+let heroBtm=0;
+function calcHero(){heroBtm=document.querySelector('.hero').getBoundingClientRect().bottom+window.scrollY}
+calcHero();
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  nav.classList.toggle('scrolled',sy>20);
+  floatCta.classList.toggle('visible',sy>heroBtm*.5);
+},{passive:true});
+window.addEventListener('resize',calcHero);
+const secs=['problems','service','phases','comparison','how','pricing','faq'];
+const links=document.querySelectorAll('.nav-links a');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    }
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+secs.forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el=>el.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vis'),i*70);obs.unobserve(e.target)}
+  });
+},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+const probCards=document.querySelectorAll('.prob-card[data-prob]');
+const probImgs=document.querySelectorAll('.prob-imgs img[data-prob]');
+probCards.forEach(card=>{
+  card.addEventListener('mouseenter',()=>{
+    const idx=card.dataset.prob;
+    probCards.forEach(c=>c.classList.remove('active'));
+    probImgs.forEach(i=>i.classList.remove('active'));
+    card.classList.add('active');
+    const img=document.querySelector(`.prob-imgs img[data-prob="${idx}"]`);
+    if(img)img.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
