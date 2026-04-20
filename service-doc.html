@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>気づけばAI採用 — サービス詳細 & 導入事例集</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700;900&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1f1e;--accent:#0d9488;--accent-hi:#2dd4bf;--accent-light:#e6f7f5;
+  --text:#0a1f1e;--sub:#334155;--muted:#64748b;
+  --bg:#ffffff;--bg2:#f0fdfa;--border:#d1e7e4;
+  --slide-w:1920px;--slide-h:1080px;
+}
+@media print{
+  @page{size:1920px 1080px;margin:0}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-top:0}
+  .slide{page-break-after:always;page-break-inside:avoid;transform:none!important;margin:0!important}
+  .slide:last-child{page-break-after:auto}
+  .viewer-bar{display:none!important}
+}
+html{background:#d1e7e4;overflow-x:hidden}
+body{font-family:'DM Sans','Noto Serif JP',sans-serif;color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-top:64px}
+
+/* PDF VIEWER BAR */
+.viewer-bar{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 32px;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.viewer-bar-left{display:flex;align-items:center;gap:14px}
+.viewer-bar-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.viewer-bar-icon svg{width:20px;height:20px;fill:#fff}
+.viewer-bar-title{color:#fff;font-size:16px;font-weight:700}
+.viewer-bar-sub{color:#94a3b8;font-size:13px;margin-left:12px}
+.viewer-bar-right{display:flex;align-items:center;gap:16px}
+.viewer-pages{color:#94a3b8;font-size:14px}
+.dl-btn{background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .2s}
+.dl-btn:hover{background:#0f766e}
+.dl-btn:disabled{background:#64748b;cursor:wait}
+.dl-btn svg{width:18px;height:18px;fill:currentColor}
+@media print{.viewer-bar{display:none!important}body{padding-top:0}}
+
+.slide{
+  width:var(--slide-w);height:var(--slide-h);
+  margin:0 auto 40px;background:var(--bg);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,.12);
+  transform-origin:top left;
+}
+@media print{.slide{margin:0;box-shadow:none;transform:none!important}}
+
+.slide-pad{padding:72px 100px}
+.slide-label{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.slide-title{font-family:'Noto Serif JP',serif;font-size:52px;font-weight:900;line-height:1.3;margin-bottom:16px;letter-spacing:-.02em}
+.slide-title em{font-style:normal;color:var(--accent)}
+.slide-lead{font-size:22px;color:var(--sub);line-height:1.8;max-width:960px}
+.slide-footer{position:absolute;bottom:0;left:0;right:0;height:44px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 100px;font-size:13px;color:var(--muted)}
+.slide-footer .logo-text{font-family:'Noto Serif JP',serif;font-weight:900;color:var(--text);font-size:14px}
+.slide-footer .logo-text span{color:var(--accent)}
+
+/* COVER */
+.cover-slide{background:linear-gradient(135deg,var(--navy) 0%,#0f2e2d 40%,#112f2e 60%,var(--navy) 100%);color:#fff;justify-content:center;align-items:flex-start;text-align:left;padding:100px 120px}
+.cover-slide::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:var(--accent);opacity:.08}
+.cover-slide::after{content:'';position:absolute;bottom:-150px;right:-100px;width:500px;height:500px;border-radius:50%;background:var(--accent-hi);opacity:.06}
+.cover-inner{position:relative;z-index:1}
+.cover-badge{display:inline-block;background:var(--accent);color:#fff;font-size:18px;font-weight:700;padding:10px 36px;border-radius:100px;margin-bottom:40px}
+.cover-slide h1{font-family:'Noto Serif JP',serif;font-size:80px;font-weight:900;letter-spacing:-.03em;margin-bottom:20px}
+.cover-slide h1 em{color:var(--accent-hi);font-style:normal}
+.cover-sub{font-size:26px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:48px}
+.cover-meta{font-size:18px;color:rgba(255,255,255,.45);line-height:2}
+.cover-logo-mark{font-size:16px;font-weight:700;color:var(--accent-hi);letter-spacing:.2em;margin-bottom:24px}
+
+/* LAYOUT */
+.two-col-img{display:grid;grid-template-columns:38fr 62fr;gap:0;flex:1}
+
+/* STATS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:40px 28px;text-align:center}
+.stat-num{font-family:'DM Sans',sans-serif;font-size:64px;font-weight:900;color:var(--accent);line-height:1.1}
+.stat-unit{font-size:22px;font-weight:700;color:var(--accent)}
+.stat-label{font-size:17px;color:var(--muted);margin-top:8px;font-weight:500}
+.stat-detail{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.6}
+
+/* SVC CARDS */
+.svc-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:36px}
+.svc-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:32px 24px}
+.svc-num{width:44px;height:44px;border-radius:12px;background:var(--accent);color:#fff;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.svc-card h4{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;margin-bottom:10px;line-height:1.4}
+.svc-card p{font-size:15px;color:var(--sub);line-height:1.8}
+.svc-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+.svc-card-sm{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start}
+.svc-card-sm .svc-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:8px}
+.svc-card-sm h5{font-size:16px;font-weight:700;margin-bottom:2px}
+.svc-card-sm p{font-size:13px;color:var(--sub);line-height:1.7}
+
+/* CASE SLIDES */
+.case-img-bg{width:100%;height:100%;background-size:cover;background-position:center;position:relative}
+.case-img-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 50%,rgba(255,255,255,.6) 100%)}
+.case-header{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.case-num{width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.case-tag{display:inline-block;font-size:16px;font-weight:700;padding:6px 18px;border-radius:8px}
+.case-info{font-size:16px;color:var(--muted)}
+.tag-it{background:#dbeafe;color:#1e40af}
+.tag-food{background:#fef3c7;color:#92400e}
+.tag-mfg{background:#e0e7ff;color:#3730a3}
+.tag-staffing{background:#fce7f3;color:#be185d}
+.tag-saas{background:#dcfce7;color:#166534}
+.tag-retail{background:#fff7ed;color:#9a3412}
+.tag-health{background:#d1fae5;color:#065f46}
+
+.case-slide h3{font-family:'Noto Serif JP',serif;font-size:48px;font-weight:900;line-height:1.25;margin-bottom:16px}
+.case-meta-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.case-meta-item{background:var(--bg2);padding:12px 14px;text-align:center}
+.case-meta-label{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:2px}
+.case-meta-val{font-size:17px;font-weight:700;color:var(--text)}
+
+.case-body{font-size:18px;color:var(--sub);line-height:1.75;margin-bottom:14px}
+.case-sub{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;letter-spacing:.04em}
+.case-body ul{padding-left:20px;margin:4px 0 0}
+.case-body li{margin-bottom:2px;font-size:18px}
+
+.case-result{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:18px 22px}
+.case-result .result-headline{font-size:24px;font-weight:900;color:var(--accent);margin-bottom:4px}
+.case-result p{font-size:17px;color:var(--sub);margin:0;line-height:1.7}
+
+/* PROCESS */
+.timeline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+.timeline-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:28px 24px;position:relative}
+.timeline-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.timeline-dot{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.timeline-dur{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:3px 12px;border-radius:6px}
+.timeline-card h4{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;margin-bottom:6px;line-height:1.4}
+.timeline-card p{font-size:15px;color:var(--sub);line-height:1.75}
+
+/* TECH */
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+.tech-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:32px 24px}
+.tech-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.tech-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--accent);flex-shrink:0}
+.tech-card h4{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700}
+.tech-card p{font-size:15px;color:var(--sub);line-height:1.75}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:36px;align-items:start}
+.price-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:36px 28px;position:relative}
+.price-card.featured{border:2px solid var(--accent)}
+.price-badge{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:13px;font-weight:700;padding:5px 20px;border-radius:100px;white-space:nowrap}
+.price-name{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.price-amount{font-family:'DM Sans',sans-serif;font-size:38px;font-weight:900;margin-bottom:4px;line-height:1.1}
+.price-note{font-size:14px;color:var(--muted);margin-bottom:16px}
+.price-list{list-style:none;margin-bottom:0}
+.price-list li{font-size:14px;color:var(--sub);padding:7px 0;border-bottom:1px solid var(--bg2);display:flex;align-items:flex-start;gap:8px}
+.price-list li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:13px;flex-shrink:0}
+
+/* GUARANTEE */
+.guar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:36px}
+.guar-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;gap:20px;align-items:flex-start}
+.guar-num{width:48px;height:48px;border-radius:12px;background:var(--accent-light);color:var(--accent);font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.guar-card h4{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.guar-card p{font-size:16px;color:var(--sub);line-height:1.75}
+
+/* END */
+.end-slide{background:var(--accent);color:#fff;justify-content:center;align-items:center;text-align:center}
+.end-slide h2{font-family:'Noto Serif JP',serif;font-size:56px;font-weight:900;margin-bottom:20px;line-height:1.3}
+.end-slide p{font-size:24px;opacity:.85;margin-bottom:40px;max-width:700px}
+.end-btn{display:inline-block;background:#fff;color:var(--accent);padding:20px 64px;border-radius:14px;font-size:22px;font-weight:700;text-decoration:none;transition:transform .2s}
+.end-btn:hover{transform:translateY(-3px)}
+.end-meta{margin-top:48px;font-size:18px;opacity:.6;line-height:2}
+</style>
+</head>
+<body>
+
+<!-- VIEWER BAR -->
+<div class="viewer-bar">
+  <div class="viewer-bar-left">
+    <div class="viewer-bar-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+    <div class="viewer-bar-title">気づけばAI採用_サービス詳細_導入事例集.pdf</div>
+    <div class="viewer-bar-sub">17ページ / 株式会社BEWIBE</div>
+  </div>
+  <div class="viewer-bar-right">
+    <button class="dl-btn" id="dlBtn" onclick="downloadPDF()">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      <span id="dlText">PDFをダウンロード</span>
+    </button>
+  </div>
+</div>
+
+<!-- SLIDE 1: COVER -->
+<div class="slide cover-slide">
+  <div class="cover-inner">
+    <div class="cover-logo-mark">BEWIBE Inc.</div>
+    <div class="cover-badge">サービス詳細 & 導入事例集</div>
+    <h1>気づけば<em>AI</em>採用</h1>
+    <p class="cover-sub">採用業務をまるごとBPO。<br>AIで仕組み化して、そのまま納品。</p>
+    <div class="cover-meta">
+      株式会社BEWIBE<br>
+      contact@bewibe.com<br>
+      2026年4月 第1版
+    </div>
+  </div>
+  <div class="slide-footer" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)"><div class="logo-text" style="color:#fff">気づけば<span style="color:var(--accent-hi)">AI</span>採用</div><div style="color:rgba(255,255,255,.4)">1</div></div>
+</div>
+
+<!-- SLIDE 2: TOC -->
+<div class="slide">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">CONTENTS</div>
+    <div class="slide-title">目次</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 48px;margin-top:36px">
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">01</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">サービス概要</div><div style="font-size:15px;color:var(--muted);margin-top:2px">3フェーズの全体像と対応業務</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.3</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">02</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">採用の現状データ</div><div style="font-size:15px;color:var(--muted);margin-top:2px">人手不足・コスト・工数の実態</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.4</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">03</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">導入事例集</div><div style="font-size:15px;color:var(--muted);margin-top:2px">IT・飲食・製造・医療など7社の具体事例</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.5-12</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">04</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">導入プロセス</div><div style="font-size:15px;color:var(--muted);margin-top:2px">ヒアリングから納品までの6ステップ</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.13</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">05</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">技術基盤 & セキュリティ</div><div style="font-size:15px;color:var(--muted);margin-top:2px">AI技術・暗号化・アクセス制御</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.14</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:28px 32px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">06</div>
+        <div style="flex:1"><div style="font-size:22px;font-weight:700">料金体系 & 品質保証</div><div style="font-size:15px;color:var(--muted);margin-top:2px">3プランの料金と保証制度</div></div>
+        <div style="font-size:20px;font-weight:900;color:var(--muted)">p.15-16</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>2</div></div>
+</div>
+
+<!-- SLIDE 3: SERVICE OVERVIEW -->
+<div class="slide">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">SERVICE OVERVIEW</div>
+    <div class="slide-title">気づけば<em>AI</em>採用とは</div>
+    <p class="slide-lead">採用業務をまるごとBPOで受託し、運用しながらAIで仕組み化。完成した仕組みをそのまま納品する、新しい採用支援サービスです。</p>
+    <div class="svc-grid-3">
+      <div class="svc-card">
+        <div class="svc-num">1</div>
+        <h4>Phase 1: 採用BPO</h4>
+        <p>求人作成・媒体運用・スカウト送信・書類選考・面接日程調整まで、採用業務をまるごと代行。まずは人の手で回し、業務フローを可視化します。</p>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">2</div>
+        <h4>Phase 2: AI構築</h4>
+        <p>BPO運用で蓄積したデータとノウハウをもとに、業務に最適なAIツールを構築。スクリーニング自動化、スカウト文面生成、日程調整botなど。</p>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">3</div>
+        <h4>Phase 3: 納品</h4>
+        <p>構築したAIツールとオペレーションマニュアルをセットで納品。社内で自走できる状態に仕上げ、「気づけばAI採用」が完成します。</p>
+      </div>
+    </div>
+    <div class="svc-grid-2">
+      <div class="svc-card-sm"><div class="svc-dot"></div><div><h5>求人作成 & 媒体運用</h5><p>求人原稿のAI自動生成、複数媒体への一括掲載、効果測定・改善のPDCAサイクルを自動化</p></div></div>
+      <div class="svc-card-sm"><div class="svc-dot"></div><div><h5>スカウト & 候補者対応</h5><p>候補者ごとに最適化されたスカウト文面の自動生成、返信対応、面接日程の自動調整</p></div></div>
+      <div class="svc-card-sm"><div class="svc-dot"></div><div><h5>書類選考 & スクリーニング</h5><p>応募書類のAI自動評価、スキルマッチングスコアリング、合否判定の一次フィルタリング</p></div></div>
+      <div class="svc-card-sm"><div class="svc-dot"></div><div><h5>データ分析 & レポーティング</h5><p>採用ファネルの可視化、歩留まり分析、離職予測、採用チャネルROIの自動レポート生成</p></div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>3</div></div>
+</div>
+
+<!-- SLIDE 4: STATS -->
+<div class="slide" style="background:var(--bg2)">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">MARKET DATA</div>
+    <div class="slide-title">採用を取り巻く現状</div>
+    <p class="slide-lead">人手不足が深刻化する中、採用業務そのものが企業の大きな負担になっています。</p>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">34<span class="stat-unit">%</span></div>
+        <div class="stat-label">採用に人手不足</div>
+        <div class="stat-detail">採用担当者自身のリソースが不足していると回答した企業の割合</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">103<span class="stat-unit">万円</span></div>
+        <div class="stat-label">中途1名の採用コスト</div>
+        <div class="stat-detail">求人広告・エージェント費用・人件費を含む中途採用1名あたりの平均総コスト</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">70<span class="stat-unit">%</span></div>
+        <div class="stat-label">書類選考に費やす時間</div>
+        <div class="stat-detail">採用担当者の業務時間のうち、書類選考・スクリーニングに費やされている割合</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3<span class="stat-unit">ヶ月</span></div>
+        <div class="stat-label">AI採用の構築期間</div>
+        <div class="stat-detail">BPO開始からAI仕組み化・納品完了までの標準的な構築期間</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:24px">
+      <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)"><span style="font-size:28px;font-weight:900;color:var(--text)">7+</span><div style="font-size:14px;color:var(--muted);margin-top:2px">業種の導入実績</div></div>
+      <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)"><span style="font-size:28px;font-weight:900;color:var(--text)">90%</span><div style="font-size:14px;color:var(--muted);margin-top:2px">書類選考の工数削減</div></div>
+      <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)"><span style="font-size:28px;font-weight:900;color:var(--text)">3x</span><div style="font-size:14px;color:var(--muted);margin-top:2px">スカウト返信率の向上</div></div>
+      <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)"><span style="font-size:28px;font-weight:900;color:var(--text)">0日</span><div style="font-size:14px;color:var(--muted);margin-top:2px">面談日程調整のリードタイム</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>4</div></div>
+</div>
+
+<!-- SLIDE 5: CASE SECTION TITLE -->
+<div class="slide" style="background:var(--accent);color:#fff;justify-content:center;align-items:center;text-align:center">
+  <div>
+    <div style="font-size:16px;font-weight:700;letter-spacing:.2em;opacity:.6;margin-bottom:16px">CASE STUDIES</div>
+    <h2 style="font-family:'Noto Serif JP',serif;font-size:72px;font-weight:900;margin-bottom:28px;line-height:1.2">導入事例集</h2>
+    <p style="font-size:26px;opacity:.8;max-width:800px;margin:0 auto;line-height:1.7">IT・飲食・製造・人材・SaaS・小売・医療——<br>さまざまな業界で、AI採用の効果が出ています。</p>
+    <div style="display:flex;gap:32px;justify-content:center;margin-top:48px">
+      <div style="text-align:center"><div style="font-size:48px;font-weight:900">7</div><div style="font-size:16px;opacity:.7">社の事例</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+      <div style="text-align:center"><div style="font-size:48px;font-weight:900">7</div><div style="font-size:16px;opacity:.7">業種</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+      <div style="text-align:center"><div style="font-size:48px;font-weight:900">90%</div><div style="font-size:16px;opacity:.7">最大工数削減</div></div>
+    </div>
+  </div>
+  <div class="slide-footer" style="background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.1)"><div class="logo-text" style="color:#fff">気づけば<span style="color:var(--accent-hi)">AI</span>採用</div><div style="color:rgba(255,255,255,.6)">5</div></div>
+</div>
+
+<!-- SLIDE 6: CASE 1 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">1</div>
+        <span class="case-tag tag-it">IT企業</span>
+        <span class="case-info">従業員 約50名</span>
+      </div>
+      <h3>月200件の応募を自動スクリーニング。<br>書類選考の工数を90%削減。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">応募急増で選考が追いつかない</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">3ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + ATS連携 + スコアリング</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">エンジニア採用の求人に月200件以上の応募が殺到。採用担当者1名が全件を目視で書類選考しており、1件あたり15分、月50時間以上を書類選考だけに費やしていた。選考が遅れることで優秀な候補者が他社に流れるケースも頻発。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>BPO期間中に選考基準を明文化し、過去の合否データ500件をもとにAIスクリーニングモデルを構築</li>
+          <li>応募書類をATSから自動取得し、スキルマッチ度・経験年数・志望動機の整合性をスコアリング</li>
+          <li>上位20%は即面接案内、中間層は採用担当が確認、下位は自動お見送りメール送信</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">書類選考工数 月50時間 → 5時間 / 面接設定スピード 3倍</div>
+        <p>採用担当者は面接・クロージングに集中。優秀人材の取りこぼしが激減し、採用決定率が1.5倍に向上。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>6</div></div>
+</div>
+
+<!-- SLIDE 7: CASE 2 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1552566626-52f8b828add9?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">2</div>
+        <span class="case-tag tag-food">飲食チェーン</span>
+        <span class="case-info">従業員 約300名</span>
+      </div>
+      <h3>アルバイト採用の求人原稿をAI自動生成。<br>応募数が2.3倍に。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">店舗ごとの求人作成が追いつかない</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">2ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + 求人媒体API + A/Bテスト</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">全国20店舗のアルバイト求人を本部の採用担当1名が作成。店舗ごとの特徴を反映する余裕がなく、テンプレートを使い回すだけの状態。応募数は低迷し、慢性的な人手不足が店舗運営に直結していた。求人原稿の改善にも手が回らない状況が続いていた。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>BPO期間で各店舗の立地・客層・雰囲気をヒアリングし、店舗プロファイルDBを構築</li>
+          <li>AIが店舗特性に合わせた求人原稿を自動生成。駅チカ・学生街・住宅街など立地別に訴求ポイントを最適化</li>
+          <li>A/Bテスト機能で応募率の高い表現パターンを自動学習し、継続的に原稿品質が向上</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">応募数 2.3倍 / 求人作成時間 1店舗30分 → 3分</div>
+        <p>採用担当者は面接・オンボーディングに集中。店舗の人手不足が大幅に改善し、既存スタッフの負荷も軽減。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>7</div></div>
+</div>
+
+<!-- SLIDE 8: CASE 3 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">3</div>
+        <span class="case-tag tag-mfg">製造業</span>
+        <span class="case-info">従業員 約120名</span>
+      </div>
+      <h3>技術職の採用。<br>AIが職務経歴書から技術スキルを自動抽出・スコアリング。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">技術スキルの評価が属人的</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">3ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + NER + スキルDB</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">機械設計・電気制御など専門技術職の採用で、職務経歴書から候補者のスキルレベルを正確に評価するには現場マネージャーの協力が必要だった。しかし多忙な現場が書類選考に関わる時間は限られ、評価のばらつきや選考の遅延が常態化。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>BPO期間中に現場マネージャーと協力し、職種別の技術スキルマップ（200項目）を策定</li>
+          <li>AIが職務経歴書からスキルキーワードを自動抽出し、スキルマップとの一致度をスコアリング</li>
+          <li>「CAD経験5年」「PLC制御の実務経験」など、定量・定性情報を構造化データに変換し一覧表示</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">現場マネージャーの選考協力時間 80%削減 / 選考精度が安定</div>
+        <p>属人的だったスキル評価が標準化。入社後のスキルミスマッチが大幅に減少し、早期離職率も改善。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>8</div></div>
+</div>
+
+<!-- SLIDE 9: CASE 4 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">4</div>
+        <span class="case-tag tag-staffing">人材派遣</span>
+        <span class="case-info">従業員 約80名</span>
+      </div>
+      <h3>派遣スタッフの面談日程調整を完全自動化。<br>リードタイム3日→当日に。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">日程調整の往復が多すぎる</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">2ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + カレンダーAPI + LINE Bot</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">派遣スタッフの登録面談の日程調整を電話・メールで手動対応。1件あたり平均3往復、確定まで3日かかっていた。対応が遅れるとスタッフが他社に流れてしまい、登録完了率は60%にとどまっていた。コーディネーター3名の業務時間の半分が日程調整に消えていた。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>LINE Bot経由で候補者が希望日時を選択すると、AIがコーディネーターのカレンダーと自動照合</li>
+          <li>空き枠を即座に提示し、候補者がタップするだけで面談確定。リマインド通知も自動送信</li>
+          <li>キャンセル・変更もLINE上で完結。キャンセル枠は自動で他の候補者に再提案</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">日程確定リードタイム 3日 → 当日 / 登録完了率 60% → 85%</div>
+        <p>コーディネーターは面談とマッチング業務に集中。月間の派遣稼働開始数が40%増加。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>9</div></div>
+</div>
+
+<!-- SLIDE 10: CASE 5 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">5</div>
+        <span class="case-tag tag-saas">SaaS企業</span>
+        <span class="case-info">従業員 約40名</span>
+      </div>
+      <h3>エンジニア採用のスカウトメールをAIが個別最適化。<br>返信率が3倍に。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">スカウトの返信率が低い</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">2ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + プロフィール解析 + A/B</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">エンジニア採用でダイレクトスカウトを月300通送信していたが、返信率はわずか3%。テンプレートの使い回しが原因で、候補者に「量産型スカウト」と見抜かれていた。1通ずつカスタマイズする余裕はなく、採用担当者は疲弊していた。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>BPO期間中にスカウト300通のA/Bテストを実施し、高返信率の文面パターンを分析・蓄積</li>
+          <li>候補者のGitHub・Qiita・職務経歴を自動解析し、技術スタック・興味領域に合わせた文面をAIが自動生成</li>
+          <li>送信タイミングも曜日・時間帯別の開封率データに基づいて最適化</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">スカウト返信率 3% → 9% / カジュアル面談設定数 3倍</div>
+        <p>採用担当者はスカウト作成から解放され、面談・クロージングに注力。エンジニア採用数が前年比2倍に。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>10</div></div>
+</div>
+
+<!-- SLIDE 11: CASE 6 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">6</div>
+        <span class="case-tag tag-retail">小売チェーン</span>
+        <span class="case-info">従業員 約500名</span>
+      </div>
+      <h3>全国50店舗の採用を一元管理。<br>店長の採用業務をゼロに。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">店長が採用に忙殺される</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">4ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">LLM + ATS + ダッシュボード</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">全国50店舗の店長がそれぞれ求人掲載・応募対応・面接を担当。採用業務に月20時間以上を費やしており、本来の店舗運営・売上管理・スタッフ育成に影響が出ていた。店舗ごとに選考基準もバラバラで、採用品質にも大きな差があった。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>BPO期間中に全50店舗の採用を本部に集約し、統一された選考フローとAI選考基準を策定</li>
+          <li>求人作成・応募受付・一次選考・面接日程調整をすべてAIが自動処理。店長は最終面接のみ</li>
+          <li>全店舗の採用状況をリアルタイムで可視化するダッシュボードを構築。人員充足率も自動アラート</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">店長の採用業務 月20時間 → 0時間 / 採用品質のばらつき解消</div>
+        <p>店長は店舗運営に100%集中可能に。人員充足率が全店舗平均で95%以上を維持。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>11</div></div>
+</div>
+
+<!-- SLIDE 12: CASE 7 -->
+<div class="slide case-slide">
+  <div class="two-col-img" style="flex:1">
+    <div class="case-img-bg" style="background-image:url('https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=1200&q=80')"></div>
+    <div style="padding:48px 72px 48px 52px;display:flex;flex-direction:column;justify-content:center">
+      <div class="case-header">
+        <div class="case-num">7</div>
+        <span class="case-tag tag-health">医療法人</span>
+        <span class="case-info">従業員 約200名</span>
+      </div>
+      <h3>看護師採用の離職予測AI。<br>入職後1年以内の離職率を40%改善。</h3>
+      <div class="case-meta-row">
+        <div class="case-meta-item"><div class="case-meta-label">課題</div><div class="case-meta-val">看護師の早期離職が深刻</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">導入期間</div><div class="case-meta-val">3ヶ月</div></div>
+        <div class="case-meta-item"><div class="case-meta-label">使用技術</div><div class="case-meta-val">ML予測モデル + LLM + 面接支援</div></div>
+      </div>
+      <div class="case-sub">導入前の課題</div>
+      <div class="case-body">看護師の採用コストは1名あたり約80万円。にもかかわらず入職後1年以内の離職率が25%と高く、年間で数千万円の損失が発生していた。面接での見極めが難しく、「入ってみたらイメージと違った」というミスマッチが離職の主因だった。</div>
+      <div class="case-sub">構築したソリューション</div>
+      <div class="case-body">
+        <ul>
+          <li>過去5年分の採用・離職データ（300名分）を分析し、離職リスクに相関する因子を特定</li>
+          <li>応募書類と面接記録からAIが離職リスクスコアを算出。リスク要因（通勤時間、夜勤頻度、チーム相性等）を可視化</li>
+          <li>高リスク候補者には面接時に確認すべき質問をAIが自動提案。入職後のフォロー計画も自動生成</li>
+        </ul>
+      </div>
+      <div class="case-result">
+        <div class="result-headline">1年以内離職率 25% → 15% / 年間採用コスト 約2,000万円削減</div>
+        <p>「採って終わり」から「定着する採用」へ転換。現場の看護師不足が改善し、患者ケアの質も向上。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>12</div></div>
+</div>
+
+<!-- SLIDE 13: PROCESS -->
+<div class="slide">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">PROCESS</div>
+    <div class="slide-title">導入プロセス</div>
+    <p class="slide-lead">ヒアリングからAI納品まで約3ヶ月。お客様にお願いするのは「採用の困りごとを教えること」だけです。</p>
+    <div class="timeline-grid">
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">1</div><div class="timeline-dur">Week 1</div></div>
+        <h4>初回ヒアリング & 現状分析</h4>
+        <p>採用フロー・使用媒体・選考基準・課題を丁寧にヒアリング。現状の採用データを分析し、AI化の優先順位とROI予測を提示します。</p>
+      </div>
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">2</div><div class="timeline-dur">Week 2-3</div></div>
+        <h4>BPO設計 & 採用業務の引き継ぎ</h4>
+        <p>採用業務の引き継ぎを実施。求人媒体のアカウント、ATS、メールテンプレートなどを整理し、BPO運用体制を構築します。</p>
+      </div>
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">3</div><div class="timeline-dur">Month 1-2</div></div>
+        <h4>BPO運用 & データ蓄積</h4>
+        <p>プロの採用チームが実務を代行しながら、AI構築に必要なデータとノウハウを蓄積。選考基準の明文化、効果的な文面パターンの特定を並行で進めます。</p>
+      </div>
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">4</div><div class="timeline-dur">Month 2-3</div></div>
+        <h4>AI構築 & テスト</h4>
+        <p>蓄積したデータをもとにAIツールを構築。スクリーニング、スカウト文面生成、日程調整など、業務に合わせたAIをBPO運用と並行でテストします。</p>
+      </div>
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">5</div><div class="timeline-dur">Month 3</div></div>
+        <h4>レクチャー & マニュアル納品</h4>
+        <p>AIツールの操作レクチャーを実施し、運用マニュアルをセットで納品。採用担当者が自走できる状態に仕上げます。BPOからの移行もサポート。</p>
+      </div>
+      <div class="timeline-card">
+        <div class="timeline-top"><div class="timeline-dot">6</div><div class="timeline-dur">継続</div></div>
+        <h4>アフターサポート & 改善</h4>
+        <p>納品後も月次で採用データをレビューし、AIの精度改善・新機能追加を提案。採用市場の変化に合わせてツールを継続的にアップデートします。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>13</div></div>
+</div>
+
+<!-- SLIDE 14: TECH & SECURITY -->
+<div class="slide" style="background:var(--bg2)">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">TECHNOLOGY & SECURITY</div>
+    <div class="slide-title">技術基盤 & セキュリティ</div>
+    <p class="slide-lead">採用データは個人情報の塊。エンタープライズレベルの安全性で、安心してお任せいただけます。</p>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">AI</div><h4>大規模言語モデル（LLM）</h4></div>
+        <p>GPT-4o、Claude、Gemini等の最新LLMを採用業務に最適化。スカウト文面生成、書類要約、面接質問提案など、採用特化のプロンプト設計で高精度を実現。</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">ML</div><h4>予測モデル & スコアリング</h4></div>
+        <p>過去の採用・離職データから候補者のマッチ度や離職リスクを予測。スキルマッチング、カルチャーフィット、定着確率を定量的にスコアリングします。</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">API</div><h4>ATS & 媒体連携</h4></div>
+        <p>主要ATS（HRMOS、Talentio等）や求人媒体（Indeed、Wantedly等）とAPI連携。既存の採用ワークフローを変えずにAIを組み込みます。</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">TLS</div><h4>暗号化通信 & データ保護</h4></div>
+        <p>すべての通信はTLS 1.3で暗号化。候補者の個人情報はAES-256で暗号化保存。データの保管場所は国内リージョンに限定し、保持期間も明確に規定。</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">IAM</div><h4>アクセス制御 & 監査ログ</h4></div>
+        <p>ロールベースのアクセス管理で候補者データへのアクセスを厳格に制御。すべての操作は監査ログに記録。個人情報の閲覧履歴も完全にトレース可能。</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-top"><div class="tech-icon">NDA</div><h4>NDA & コンプライアンス</h4></div>
+        <p>全プロジェクトでNDA（秘密保持契約）を締結。個人情報保護法・職業安定法に準拠したデータ取り扱い。採用データの第三者提供は一切行いません。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>14</div></div>
+</div>
+
+<!-- SLIDE 15: PRICING -->
+<div class="slide">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">PRICING</div>
+    <div class="slide-title">料金体系</div>
+    <p class="slide-lead">BPOで成果を出しながらAIを構築。納品後は低コストで自走できる料金設計です。</p>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name">BPOのみ</div>
+        <div class="price-amount">&#165;148,000〜<span style="font-size:18px;font-weight:400;color:var(--muted)">/月</span></div>
+        <div class="price-note">まずは採用業務を丸投げしたい方</div>
+        <ul class="price-list">
+          <li>採用業務の完全代行</li>
+          <li>求人作成・媒体運用</li>
+          <li>書類選考・面接日程調整</li>
+          <li>スカウト送信代行</li>
+          <li>週次レポート</li>
+          <li>専任採用担当アサイン</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">おすすめ</div>
+        <div class="price-name">BPO + AIパック</div>
+        <div class="price-amount" style="color:var(--accent)">&#165;398,000〜</div>
+        <div class="price-note">BPO + AI構築・納品のフルパッケージ</div>
+        <ul class="price-list">
+          <li>BPOのみプランの全機能</li>
+          <li>AI選考ツール構築</li>
+          <li>スカウトAI構築</li>
+          <li>日程調整AI構築</li>
+          <li>操作レクチャー & マニュアル</li>
+          <li>3ヶ月間のBPO + AI構築</li>
+          <li>納品後30日間の無料サポート</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-name">AI化後 継続サポート</div>
+        <div class="price-amount">&#165;78,000〜<span style="font-size:18px;font-weight:400;color:var(--muted)">/月</span></div>
+        <div class="price-note">AI納品後の継続改善・運用サポート</div>
+        <ul class="price-list">
+          <li>月次データレビュー</li>
+          <li>AI精度の継続改善</li>
+          <li>新機能の追加開発</li>
+          <li>採用市場トレンド反映</li>
+          <li>チャット/メールサポート</li>
+          <li>四半期ごとの戦略提案</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:15px;color:var(--muted);margin-top:24px">※ 料金は採用規模・職種数・AI構築範囲によって変動します。外部API・インフラ費用（月額数千円〜）は別途。すべて事前にお見積もりを提示します。</p>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>15</div></div>
+</div>
+
+<!-- SLIDE 16: GUARANTEE -->
+<div class="slide" style="background:var(--bg2)">
+  <div class="slide-pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="slide-label">GUARANTEE & SUPPORT</div>
+    <div class="slide-title">品質保証 & サポート体制</div>
+    <p class="slide-lead">採用は待ったなし。スピードと品質の両立をお約束します。</p>
+    <div class="guar-grid">
+      <div class="guar-card">
+        <div class="guar-num">1</div>
+        <div>
+          <h4>成果が出なければ全額返金</h4>
+          <p>BPO開始後30日間で、事前に合意したKPI（応募数・面接設定数等）を達成できなかった場合は全額返金。成果に自信があるからこそ、この保証を提供しています。</p>
+        </div>
+      </div>
+      <div class="guar-card">
+        <div class="guar-num">2</div>
+        <div>
+          <h4>営業日1日以内の即日対応</h4>
+          <p>採用は候補者を待たせられません。サポート期間中のお問い合わせには営業日1日以内に回答。緊急の不具合は当日中に対応します。</p>
+        </div>
+      </div>
+      <div class="guar-card">
+        <div class="guar-num">3</div>
+        <div>
+          <h4>AI精度の継続改善保証</h4>
+          <p>納品後のAIツールの精度が低下した場合、無料で再チューニングを実施。採用市場や候補者傾向の変化に合わせて、AIを常に最適な状態に保ちます。</p>
+        </div>
+      </div>
+      <div class="guar-card">
+        <div class="guar-num">4</div>
+        <div>
+          <h4>ロックイン（囲い込み）なし</h4>
+          <p>月額プランはいつでも解約可能。違約金は一切ありません。納品したAIツール・マニュアル・データはすべてお客様の資産です。他社への引き継ぎにも対応。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><div class="logo-text">気づけば<span>AI</span>採用</div><div>16</div></div>
+</div>
+
+<!-- SLIDE 17: END -->
+<div class="slide end-slide">
+  <div style="position:relative;z-index:1">
+    <h2>まずは、お気軽に<br>ご相談ください</h2>
+    <p>採用の「困った」を教えてください。<br>AI採用の可能性を具体的にお伝えします。</p>
+    <a href="mailto:contact@bewibe.com?subject=%E6%B0%97%E3%81%A5%E3%81%91%E3%81%B0AI%E6%8E%A1%E7%94%A8%20%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%81%AE%E3%81%8A%E7%94%B3%E3%81%97%E8%BE%BC%E3%81%BF&body=%E3%81%8A%E5%90%8D%E5%89%8D%3A%0A%E4%BC%9A%E7%A4%BE%E5%90%8D%3A%0A%E3%81%94%E7%9B%B8%E8%AB%87%E5%86%85%E5%AE%B9%3A%0A" class="end-btn">無料相談する →</a>
+    <div class="end-meta">
+      株式会社BEWIBE<br>
+      contact@bewibe.com
+    </div>
+  </div>
+  <div class="slide-footer" style="background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.1)"><div class="logo-text" style="color:#fff">気づけば<span style="color:var(--accent-hi)">AI</span>採用</div><div style="color:rgba(255,255,255,.6)">17</div></div>
+</div>
+
+<script>
+function scaleSlides(){
+  var vw=window.innerWidth;
+  var sw=1920;
+  var scale=Math.min(vw/sw,1);
+  var offsetX=(vw-sw*scale)/2;
+  var slides=document.querySelectorAll('.slide');
+  slides.forEach(function(s){
+    s.style.transform='translateX('+offsetX+'px) scale('+scale+')';
+    s.style.marginBottom=(-(1080*(1-scale))+40)+'px';
+  });
+}
+scaleSlides();
+window.addEventListener('resize',scaleSlides);
+
+async function downloadPDF(){
+  var btn=document.getElementById('dlBtn');
+  var txt=document.getElementById('dlText');
+  btn.disabled=true;
+  txt.textContent='生成中...';
+  try{
+    var jsPDF=window.jspdf.jsPDF;
+    var pdf=new jsPDF({orientation:'landscape',unit:'px',format:[1920,1080],hotfixes:['px_scaling'],compress:false});
+    var slides=document.querySelectorAll('.slide');
+    for(var i=0;i<slides.length;i++){
+      var s=slides[i];
+      var origT=s.style.transform;
+      var origM=s.style.marginBottom;
+      s.style.transform='none';
+      s.style.marginBottom='0';
+      var canvas=await html2canvas(s,{
+        width:1920,height:1080,scale:2,
+        useCORS:true,allowTaint:true,logging:false,
+        backgroundColor:'#ffffff',
+        imageTimeout:15000
+      });
+      var img=canvas.toDataURL('image/png');
+      if(i>0)pdf.addPage();
+      pdf.addImage(img,'PNG',0,0,1920,1080,undefined,'FAST');
+      s.style.transform=origT;
+      s.style.marginBottom=origM;
+      txt.textContent='生成中... ('+(i+1)+'/'+slides.length+')';
+    }
+    pdf.save('気づけばAI採用_サービス詳細_導入事例集.pdf');
+  }catch(e){
+    console.error(e);
+    alert('PDF生成中にエラーが発生しました。もう一度お試しください。');
+  }
+  btn.disabled=false;
+  txt.textContent='PDFをダウンロード';
+}
+</script>
+</body>
+</html>
