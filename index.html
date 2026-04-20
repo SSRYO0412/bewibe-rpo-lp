@@ -66,10 +66,10 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.35);color:#5eead4;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:.1em;font-weight:500;margin-bottom:24px}
 .hero-badge::before{content:'';width:6px;height:6px;background:#5eead4;border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.hero h1{font-family:'Noto Serif JP',serif;font-size:clamp(32px,4vw,52px);color:var(--white);font-weight:700;line-height:1.3;margin-bottom:20px;letter-spacing:-.02em}
+.hero h1{font-family:'Noto Serif JP',serif;font-size:clamp(28px,3.6vw,46px);color:var(--white);font-weight:700;line-height:1.3;margin-bottom:20px;letter-spacing:-.02em}
 .sp-only{display:none}
 .pc-only{display:inline}
-.hero-lead{font-size:clamp(14px,1.4vw,17px);color:rgba(255,255,255,.72);max-width:520px;line-height:1.85;margin-bottom:36px;font-weight:400;letter-spacing:.02em}
+.hero-lead{font-size:clamp(13px,1.3vw,15px);color:rgba(255,255,255,.72);max-width:520px;line-height:1.85;margin-bottom:36px;font-weight:400;letter-spacing:.02em}
 .hero-lead .hl-kw{color:var(--accent-hi);font-weight:500}
 .hero-cta-zone{display:flex;flex-direction:column;gap:14px}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap}
@@ -80,13 +80,20 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
 .hero-micro{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .micro-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.03em}
 .micro-item::before{content:'✓';color:var(--accent-hi);font-size:10px;font-weight:700}
-.hero-highlights{display:flex;flex-direction:column;gap:0;align-items:center;position:relative;width:240px;height:340px}
-.hero-hl{width:180px;height:180px;border-radius:50%;border:2px solid rgba(45,212,191,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;transition:border-color .3s,transform .3s;position:absolute}
-.hero-hl:first-child{top:0;left:-30px}
-.hero-hl:last-child{bottom:0;right:-30px}
-.hero-hl:hover{border-color:rgba(45,212,191,.6);transform:scale(1.04)}
-.hero-hl strong{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white);line-height:1.2}
+.hero-highlights{display:flex;flex-direction:column;gap:0;align-items:center;position:relative;width:280px;height:420px}
+.hero-hl{width:190px;height:190px;border-radius:50%;border:2px solid rgba(45,212,191,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;transition:all .4s cubic-bezier(.22,1,.36,1);position:absolute;cursor:pointer;background:rgba(255,255,255,.03)}
+.hero-hl:first-child{top:0;left:-30px;animation:hlFloat1 6s ease-in-out infinite}
+.hero-hl:nth-child(2){top:140px;right:-30px;animation:hlFloat2 7s ease-in-out infinite}
+.hero-hl:last-child{bottom:0;left:10px;animation:hlFloat3 8s ease-in-out infinite}
+.hero-hl:hover{border-color:var(--accent-hi);transform:scale(1.1);background:rgba(13,148,136,.15);box-shadow:0 0 40px rgba(13,148,136,.25)}
+.hero-hl strong{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:var(--white);line-height:1.2;transition:transform .3s}
+.hero-hl:hover strong{transform:scale(1.05)}
 .hero-hl span{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.03em;line-height:1.4}
+.hero-hl-detail{position:absolute;bottom:-48px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--navy-2);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 16px;font-size:12px;color:rgba(255,255,255,.7);white-space:nowrap;opacity:0;pointer-events:none;transition:all .3s ease;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.hero-hl:hover .hero-hl-detail{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes hlFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-10px)}}
+@keyframes hlFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,8px)}}
+@keyframes hlFloat3{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-6px)}}
 .hero-sp-highlights{display:none;flex-direction:column;gap:10px;margin-top:28px}
 .hero-sp-hl{background:rgba(13,148,136,.1);border:1px solid rgba(45,212,191,.2);border-radius:8px;padding:14px 20px;text-align:center}
 .hero-sp-hl strong{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--white);display:block;line-height:1.3;margin-bottom:2px}
@@ -112,7 +119,7 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
 section{padding:96px 0}
 .sec{max-width:var(--max-w);margin:0 auto;padding:0 5%}
 .tag{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:12px;display:inline-block;padding-left:12px;border-left:3px solid var(--accent)}
-.sec-title{font-family:'Noto Serif JP',serif;font-size:clamp(32px,4.5vw,52px);color:var(--text);font-weight:700;line-height:1.4;margin-bottom:14px}
+.sec-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,4vw,44px);color:var(--text);font-weight:700;line-height:1.4;margin-bottom:14px}
 .sec-lead{font-size:20px;color:var(--sub);line-height:1.9;max-width:600px;margin-bottom:48px;font-weight:300}
 
 /* ── PROBLEMS ── */
@@ -128,6 +135,16 @@ section{padding:96px 0}
 .prob-icon-wrap svg{width:18px;height:18px}
 .prob-card h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.4}
 .prob-card p{font-size:16px;color:var(--muted);line-height:1.65}
+
+.prob-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease;background:var(--accent-lt);border-radius:8px;font-size:14px;color:var(--text);line-height:1.8;padding:0 16px;margin-top:0}
+.prob-card.open .prob-answer{max-height:200px;padding:14px 16px;margin-top:12px}
+.prob-hint{font-size:12px;color:var(--muted);margin-top:8px;transition:opacity .2s}
+.prob-card.open .prob-hint{opacity:0;height:0;margin:0;overflow:hidden}
+.prob-cta{font-size:13px;font-weight:700;color:var(--accent);margin-top:8px;display:inline-block}
+.prob-cta:hover{text-decoration:underline}
+.svc-benefit:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
+.stat{transition:background .2s}
+.stat:hover{background:var(--accent-lt)}
 
 /* ── SERVICE CARDS ── */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--gray-line);border-radius:14px;overflow:hidden}
@@ -397,10 +414,17 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       <div class="hero-hl">
         <strong>月額<br>¥148,000〜</strong>
         <span>採用規模に応じて</span>
+        <div class="hero-hl-detail">エージェント手数料の1/10以下</div>
       </div>
       <div class="hero-hl">
         <strong>3ヶ月で<br>AI導入完了</strong>
         <span>裏側で自動構築</span>
+        <div class="hero-hl-detail">BPO中にAIが学習 → 納品</div>
+      </div>
+      <div class="hero-hl">
+        <strong>応募→面談<br>最短当日</strong>
+        <span>AIが即時対応</span>
+        <div class="hero-hl-detail">候補者を逃さないスピード採用</div>
       </div>
     </div>
   </div>
@@ -449,35 +473,35 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
         <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80" alt="採用ミスマッチ" data-prob="4">
       </div>
       <div class="prob-cards">
-        <div class="prob-card fi active" data-prob="0">
+        <div class="prob-card fi active" data-prob="0" onclick="this.classList.toggle('open')">
           <div class="prob-icon-wrap">
             <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="#0d9488" stroke-width="1.5"/><path d="M9 5v4l2.5 2.5" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div><h3>社長・現場マネージャーが採用業務に追われている</h3><p>本業に集中したいのに、求人原稿の作成・応募者対応・面談設定で時間が消える。</p></div>
+          <div><h3>社長・現場マネージャーが採用業務に追われている</h3><p>本業に集中したいのに、求人原稿の作成・応募者対応・面談設定で時間が消える。</p><div class="prob-hint">▼ クリックで解決策を表示</div><div class="prob-answer">気づけばAI採用なら、採用業務をまるごと丸投げ。求人掲載から応募者対応、面談設定まですべて代行。3ヶ月後にはAIが自動処理する基盤が完成します。<br><a href="#contact" class="prob-cta">詳しく見る →</a></div></div>
         </div>
-        <div class="prob-card fi" data-prob="1">
+        <div class="prob-card fi" data-prob="1" onclick="this.classList.toggle('open')">
           <div class="prob-icon-wrap">
             <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="#0d9488" stroke-width="1.5"/><path d="M6 7h6M6 10h4" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div><h3>求人媒体に掲載しても、まともな応募が来ない</h3><p>原稿の質・ターゲティング・運用の最適化ができておらず、コストだけがかさむ。</p></div>
+          <div><h3>求人媒体に掲載しても、まともな応募が来ない</h3><p>原稿の質・ターゲティング・運用の最適化ができておらず、コストだけがかさむ。</p><div class="prob-hint">▼ クリックで解決策を表示</div><div class="prob-answer">AIが求人原稿を最適化し、媒体ごとのアルゴリズムに合わせて掲載運用。ターゲットに刺さる表現と適切な露出で、応募の質と量を改善します。<br><a href="#contact" class="prob-cta">詳しく見る →</a></div></div>
         </div>
-        <div class="prob-card fi" data-prob="2">
+        <div class="prob-card fi" data-prob="2" onclick="this.classList.toggle('open')">
           <div class="prob-icon-wrap">
             <svg viewBox="0 0 18 18" fill="none"><path d="M9 2a4 4 0 100 8A4 4 0 009 2z" stroke="#0d9488" stroke-width="1.5"/><path d="M2 16c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div><h3>書類選考と日程調整だけで1日が終わる</h3><p>履歴書を読んで、合否を判断して、候補者にメールして、カレンダーを確認して…の繰り返し。</p></div>
+          <div><h3>書類選考と日程調整だけで1日が終わる</h3><p>履歴書を読んで、合否を判断して、候補者にメールして、カレンダーを確認して…の繰り返し。</p><div class="prob-hint">▼ クリックで解決策を表示</div><div class="prob-answer">AIが履歴書・職務経歴書を自動スクリーニングし、採用基準に基づいたスコアリングを実行。人が見るべき候補者だけに集中できる体制を構築します。<br><a href="#contact" class="prob-cta">詳しく見る →</a></div></div>
         </div>
-        <div class="prob-card fi" data-prob="3">
+        <div class="prob-card fi" data-prob="3" onclick="this.classList.toggle('open')">
           <div class="prob-icon-wrap">
             <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="2" stroke="#0d9488" stroke-width="1.5"/><path d="M6 4V3a1 1 0 011-1h4a1 1 0 011 1v1" stroke="#0d9488" stroke-width="1.5"/><path d="M6 9h6M6 12h4" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div><h3>採用にAIを使いたいが、何から始めればいいかわからない</h3><p>AIツールが多すぎて選定も導入もできない。そもそも採用業務を回すので精一杯。</p></div>
+          <div><h3>採用にAIを使いたいが、何から始めればいいかわからない</h3><p>AIツールが多すぎて選定も導入もできない。そもそも採用業務を回すので精一杯。</p><div class="prob-hint">▼ クリックで解決策を表示</div><div class="prob-answer">お客様がやることは「こんな人がほしい」を伝えるだけ。AI採用エージェントの選定・構築・運用設定はすべてこちらで行います。採用を預けている間にAI基盤が完成。<br><a href="#contact" class="prob-cta">詳しく見る →</a></div></div>
         </div>
-        <div class="prob-card fi" data-prob="4">
+        <div class="prob-card fi" data-prob="4" onclick="this.classList.toggle('open')">
           <div class="prob-icon-wrap">
             <svg viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3l6 6-6 6" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div><h3>エージェントは高い、RPOは丸投げで社内に何も残らない</h3><p>人材紹介は年収の35%。RPOは毎月のコストが続くだけで、自社の採用力は上がらない。</p></div>
+          <div><h3>エージェントは高い、RPOは丸投げで社内に何も残らない</h3><p>人材紹介は年収の35%。RPOは毎月のコストが続くだけで、自社の採用力は上がらない。</p><div class="prob-hint">▼ クリックで解決策を表示</div><div class="prob-answer">人材紹介の手数料（年収の30-35%）から解放。AI化完了後は月額コストが約半額に。内製化すればBPO費用ゼロで、AIエージェントが採用を回し続けます。<br><a href="#contact" class="prob-cta">詳しく見る →</a></div></div>
         </div>
       </div>
     </div>
@@ -892,6 +916,28 @@ probCards.forEach(card=>{
     if(img)img.classList.add('active');
   });
 });
+var statObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var el = e.target;
+      var text = el.textContent;
+      var num = parseFloat(text);
+      if(isNaN(num)) return;
+      var duration = 1200;
+      var start = performance.now();
+      function step(now){
+        var progress = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.round(num * eased);
+        el.childNodes[0].textContent = current;
+        if(progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      statObserver.unobserve(el);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.stat-n').forEach(function(el){statObserver.observe(el)});
 </script>
 </body>
 </html>
