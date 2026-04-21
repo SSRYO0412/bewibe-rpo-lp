@@ -113,10 +113,11 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
 .stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;height:48px}
 .stat-badge{font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-lt);padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.04em}
 .stat-chart{height:72px;margin-bottom:10px}
+.stat-chart svg{display:block}
 .stat-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px;flex:1}
 .stat-n{font-family:'Noto Serif JP',serif;font-size:38px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:8px;display:block}
 .stat-n em{font-style:normal;font-size:20px;color:var(--accent)}
-.stat-l{font-size:13px;color:var(--sub);font-weight:700;margin-bottom:14px;white-space:nowrap;letter-spacing:.04em}
+.stat-l{font-size:13px;color:var(--sub);font-weight:700;margin-bottom:14px;line-height:1.4;letter-spacing:.04em}
 .stat-src{font-size:9px;color:var(--muted);opacity:.7;letter-spacing:.02em;text-transform:uppercase}
 
 /* ── SECTION BASE ── */
@@ -444,13 +445,15 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       <span class="stat-l">中小企業が「採用に十分な人手がない」</span>
       <div class="stat-chart">
         <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
-          <rect x="0" y="0" width="48" height="72" rx="6" fill="#0d9488" opacity="0.15"/>
-          <rect x="0" y="0" width="48" height="72" rx="6" fill="url(#rg1)" opacity="0.3"/>
-          <rect x="48" y="0" width="92" height="72" rx="0 6 6 0" fill="#dde2ea" opacity="0.3"/>
-          <defs><linearGradient id="rg1" x1="0" y1="0" x2="48" y2="0"><stop stop-color="#0d9488" stop-opacity="0.1"/><stop offset="1" stop-color="#0d9488" stop-opacity="0.4"/></linearGradient></defs>
-        </svg>
+            <rect x="0" y="8" width="48" height="56" rx="6" fill="#0d9488" opacity="0.12"/>
+            <rect x="0" y="8" width="48" height="56" rx="6" fill="url(#rg1)" opacity="0.25"/>
+            <rect x="48" y="8" width="92" height="56" fill="#dde2ea" opacity="0.25"/>
+            <text x="38" y="6" font-size="10" fill="#0d9488" opacity="0.5" font-weight="600">34</text>
+            <text x="90" y="6" font-size="10" fill="#94a3b8" opacity="0.4">66</text>
+            <defs><linearGradient id="rg1" x1="0" y1="0" x2="48" y2="0"><stop stop-color="#0d9488" stop-opacity="0.05"/><stop offset="1" stop-color="#0d9488" stop-opacity="0.35"/></linearGradient></defs>
+          </svg>
       </div>
-      <span class="stat-desc">3社に1社が採用担当不在。経営者自ら求人対応している現状。</span>
+      <span class="stat-desc">3社に1社が採用担当不在。<br>経営者自ら求人対応している現状</span>
       <span class="stat-src">SRC: 中小企業庁 2024年白書</span>
     </div>
     <div class="stat fi">
@@ -461,15 +464,15 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       <span class="stat-l">中途1名あたりの平均採用コスト</span>
       <div class="stat-chart">
         <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
-          <rect x="0" y="4" width="30" height="14" rx="5" fill="#0d9488" opacity="0.25"/>
-          <rect x="0" y="24" width="60" height="14" rx="5" fill="#0d9488" opacity="0.5"/>
-          <rect x="0" y="44" width="120" height="14" rx="5" fill="#0d9488" opacity="0.85"/>
-          <text x="36" y="15" font-size="11" fill="#718096" font-weight="500">媒体</text>
-          <text x="66" y="35" font-size="11" fill="#718096" font-weight="500">RPO</text>
-          <text x="126" y="55" font-size="11" fill="#0d9488" font-weight="700">紹介</text>
-        </svg>
+            <rect x="0" y="4" width="30" height="14" rx="5" fill="#0d9488" opacity="0.2"/>
+            <rect x="0" y="26" width="60" height="14" rx="5" fill="#0d9488" opacity="0.45"/>
+            <rect x="0" y="48" width="120" height="14" rx="5" fill="#0d9488" opacity="0.8"/>
+            <text x="36" y="15" font-size="10" fill="#94a3b8" opacity="0.5" font-weight="500">媒体</text>
+            <text x="66" y="37" font-size="10" fill="#94a3b8" opacity="0.5" font-weight="500">RPO</text>
+            <text x="126" y="59" font-size="10" fill="#0d9488" opacity="0.5" font-weight="600">紹介</text>
+          </svg>
       </div>
-      <span class="stat-desc">人材紹介は年収の30-35%。AI化で大幅に削減可能。</span>
+      <span class="stat-desc">人材紹介は年収の30-35%。<br>AI化で大幅に削減可能</span>
       <span class="stat-src">SRC: リクルート 2024年調査</span>
     </div>
     <div class="stat fi">
@@ -480,11 +483,14 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       <span class="stat-l">書類選考・日程調整に費やされる時間</span>
       <div class="stat-chart">
         <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
-          <circle cx="70" cy="36" r="28" stroke="#dde2ea" stroke-width="8" fill="none"/>
-          <circle cx="70" cy="36" r="28" stroke="#0d9488" stroke-width="8" fill="none" stroke-dasharray="176" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 70 36)"/>
-        </svg>
+            <circle cx="70" cy="36" r="28" stroke="#dde2ea" stroke-width="8" fill="none"/>
+            <circle cx="70" cy="36" r="28" stroke="#0d9488" stroke-width="8" fill="none" stroke-dasharray="176" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 70 36)"/>
+            <text x="108" y="20" font-size="8" fill="#0d9488" opacity="0.4">自動化</text>
+            <text x="108" y="32" font-size="8" fill="#0d9488" opacity="0.4">可能</text>
+            <text x="20" y="56" font-size="8" fill="#94a3b8" opacity="0.4">手動</text>
+          </svg>
       </div>
-      <span class="stat-desc">採用業務の7割がAIで自動化可能な定型作業。</span>
+      <span class="stat-desc">採用業務の7割がAIで<br>自動化可能な定型作業</span>
       <span class="stat-src">&nbsp;</span>
     </div>
     <div class="stat fi">
@@ -495,15 +501,18 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       <span class="stat-l">AI採用基盤の構築期間</span>
       <div class="stat-chart">
         <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
-          <rect x="0" y="14" width="42" height="18" rx="9" fill="#0d9488" opacity="0.2"/>
-          <rect x="48" y="14" width="42" height="18" rx="9" fill="#0d9488" opacity="0.5"/>
-          <rect x="96" y="14" width="42" height="18" rx="9" fill="#0d9488"/>
-          <text x="10" y="52" font-size="11" fill="#718096" font-weight="600">BPO</text>
-          <text x="56" y="52" font-size="11" fill="#718096" font-weight="600">AI構築</text>
-          <text x="104" y="52" font-size="11" fill="#0d9488" font-weight="700">納品</text>
-        </svg>
+            <rect x="0" y="12" width="42" height="20" rx="10" fill="#0d9488" opacity="0.18"/>
+            <rect x="48" y="12" width="42" height="20" rx="10" fill="#0d9488" opacity="0.45"/>
+            <rect x="96" y="12" width="42" height="20" rx="10" fill="#0d9488"/>
+            <text x="10" y="50" font-size="10" fill="#718096" font-weight="500">BPO</text>
+            <text x="56" y="50" font-size="10" fill="#718096" font-weight="500">AI構築</text>
+            <text x="104" y="50" font-size="10" fill="#0d9488" font-weight="700">納品</text>
+            <text x="10" y="64" font-size="8" fill="#94a3b8" opacity="0.4">Month 1</text>
+            <text x="56" y="64" font-size="8" fill="#94a3b8" opacity="0.4">Month 2</text>
+            <text x="104" y="64" font-size="8" fill="#0d9488" opacity="0.4">Month 3</text>
+          </svg>
       </div>
-      <span class="stat-desc">BPO開始と同時にAI学習。3ヶ月で御社専用のAI採用基盤が完成。</span>
+      <span class="stat-desc">BPO開始と同時にAI学習。<br>3ヶ月で御社専用のAI基盤が完成</span>
       <span class="stat-src">&nbsp;</span>
     </div>
     </div>
