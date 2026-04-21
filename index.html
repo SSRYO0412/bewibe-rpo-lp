@@ -107,16 +107,16 @@ nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.35)}
 .stats{background:var(--white);padding:64px 0}
 .stats-inner{max-width:var(--max-w);margin:0 auto;padding:0 5%}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--gray-line);border-radius:8px;overflow:hidden}
-.stat{padding:28px 20px;border-right:1px solid var(--gray-line);position:relative;background:var(--white);transition:background .2s}
+.stat{padding:28px 20px;border-right:1px solid var(--gray-line);position:relative;background:var(--white);transition:background .2s;display:flex;flex-direction:column}
 .stat:last-child{border-right:none}
 .stat:hover{background:var(--gray-bg)}
-.stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;height:48px}
 .stat-badge{font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-lt);padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.04em}
-.stat-chart{height:56px;margin-bottom:10px}
-.stat-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.stat-chart{height:72px;margin-bottom:10px}
+.stat-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px;flex:1}
 .stat-n{font-family:'Noto Serif JP',serif;font-size:38px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:8px;display:block}
 .stat-n em{font-style:normal;font-size:20px;color:var(--accent)}
-.stat-l{font-size:14px;color:var(--sub);letter-spacing:.04em;line-height:1.4;font-weight:700;margin-bottom:12px}
+.stat-l{font-size:13px;color:var(--sub);font-weight:700;margin-bottom:14px;white-space:nowrap;letter-spacing:.04em}
 .stat-src{font-size:9px;color:var(--muted);opacity:.7;letter-spacing:.02em;text-transform:uppercase}
 
 /* ── SECTION BASE ── */
@@ -148,7 +148,6 @@ section{padding:96px 0}
 .prob-cta{font-size:13px;font-weight:700;color:var(--accent);margin-top:8px;display:inline-block}
 .prob-cta:hover{text-decoration:underline}
 .svc-benefit:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
-.stat{transition:background .2s}
 
 /* ── SERVICE CARDS ── */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--gray-line);border-radius:14px;overflow:hidden}
@@ -444,10 +443,11 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       </div>
       <span class="stat-l">中小企業が「採用に十分な人手がない」</span>
       <div class="stat-chart">
-        <svg width="100%" height="56" viewBox="0 0 120 56" fill="none">
-          <rect x="0" y="38" width="41" height="16" rx="4" fill="#0d9488" opacity="0.6"/>
-          <rect x="45" y="38" width="75" height="16" rx="4" fill="#dde2ea"/>
-          <text x="41" y="30" font-size="11" fill="#0d9488" font-weight="700">34%</text>
+        <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
+          <rect x="0" y="0" width="48" height="72" rx="6" fill="#0d9488" opacity="0.15"/>
+          <rect x="0" y="0" width="48" height="72" rx="6" fill="url(#rg1)" opacity="0.3"/>
+          <rect x="48" y="0" width="92" height="72" rx="0 6 6 0" fill="#dde2ea" opacity="0.3"/>
+          <defs><linearGradient id="rg1" x1="0" y1="0" x2="48" y2="0"><stop stop-color="#0d9488" stop-opacity="0.1"/><stop offset="1" stop-color="#0d9488" stop-opacity="0.4"/></linearGradient></defs>
         </svg>
       </div>
       <span class="stat-desc">3社に1社が採用担当不在。経営者自ら求人対応している現状。</span>
@@ -460,13 +460,13 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       </div>
       <span class="stat-l">中途1名あたりの平均採用コスト</span>
       <div class="stat-chart">
-        <svg width="100%" height="56" viewBox="0 0 120 56" fill="none">
-          <rect x="5" y="4" width="22" height="10" rx="4" fill="#0d9488" opacity="0.3"/>
-          <text x="32" y="13" font-size="10" fill="#718096" font-weight="500">媒体</text>
-          <rect x="5" y="20" width="48" height="10" rx="4" fill="#0d9488" opacity="0.55"/>
-          <text x="58" y="29" font-size="10" fill="#718096" font-weight="500">RPO</text>
-          <rect x="5" y="36" width="95" height="10" rx="4" fill="#0d9488"/>
-          <text x="105" y="45" font-size="10" fill="#0d9488" font-weight="700">紹介</text>
+        <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
+          <rect x="0" y="4" width="30" height="14" rx="5" fill="#0d9488" opacity="0.25"/>
+          <rect x="0" y="24" width="60" height="14" rx="5" fill="#0d9488" opacity="0.5"/>
+          <rect x="0" y="44" width="120" height="14" rx="5" fill="#0d9488" opacity="0.85"/>
+          <text x="36" y="15" font-size="11" fill="#718096" font-weight="500">媒体</text>
+          <text x="66" y="35" font-size="11" fill="#718096" font-weight="500">RPO</text>
+          <text x="126" y="55" font-size="11" fill="#0d9488" font-weight="700">紹介</text>
         </svg>
       </div>
       <span class="stat-desc">人材紹介は年収の30-35%。AI化で大幅に削減可能。</span>
@@ -479,10 +479,9 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       </div>
       <span class="stat-l">書類選考・日程調整に費やされる時間</span>
       <div class="stat-chart">
-        <svg width="100%" height="56" viewBox="0 0 120 56" fill="none">
-          <circle cx="60" cy="28" r="22" stroke="#dde2ea" stroke-width="6" fill="none"/>
-          <circle cx="60" cy="28" r="22" stroke="#0d9488" stroke-width="6" fill="none" stroke-dasharray="138" stroke-dashoffset="41" stroke-linecap="round" transform="rotate(-90 60 28)"/>
-          <text x="60" y="32" font-size="14" fill="#0d9488" font-weight="800" text-anchor="middle">70%</text>
+        <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
+          <circle cx="70" cy="36" r="28" stroke="#dde2ea" stroke-width="8" fill="none"/>
+          <circle cx="70" cy="36" r="28" stroke="#0d9488" stroke-width="8" fill="none" stroke-dasharray="176" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 70 36)"/>
         </svg>
       </div>
       <span class="stat-desc">採用業務の7割がAIで自動化可能な定型作業。</span>
@@ -495,13 +494,13 @@ footer{background:#061412;color:rgba(255,255,255,.3);text-align:center;padding:2
       </div>
       <span class="stat-l">AI採用基盤の構築期間</span>
       <div class="stat-chart">
-        <svg width="100%" height="56" viewBox="0 0 120 56" fill="none">
-          <rect x="0" y="18" width="36" height="12" rx="6" fill="#0d9488" opacity="0.25"/>
-          <rect x="40" y="18" width="36" height="12" rx="6" fill="#0d9488" opacity="0.55"/>
-          <rect x="80" y="18" width="36" height="12" rx="6" fill="#0d9488"/>
-          <text x="12" y="46" font-size="10" fill="#718096" font-weight="500">BPO</text>
-          <text x="48" y="46" font-size="10" fill="#718096" font-weight="500">AI構築</text>
-          <text x="88" y="46" font-size="10" fill="#0d9488" font-weight="700">納品</text>
+        <svg width="100%" height="72" viewBox="0 0 140 72" fill="none">
+          <rect x="0" y="14" width="42" height="18" rx="9" fill="#0d9488" opacity="0.2"/>
+          <rect x="48" y="14" width="42" height="18" rx="9" fill="#0d9488" opacity="0.5"/>
+          <rect x="96" y="14" width="42" height="18" rx="9" fill="#0d9488"/>
+          <text x="10" y="52" font-size="11" fill="#718096" font-weight="600">BPO</text>
+          <text x="56" y="52" font-size="11" fill="#718096" font-weight="600">AI構築</text>
+          <text x="104" y="52" font-size="11" fill="#0d9488" font-weight="700">納品</text>
         </svg>
       </div>
       <span class="stat-desc">BPO開始と同時にAI学習。3ヶ月で御社専用のAI採用基盤が完成。</span>
